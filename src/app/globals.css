@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+/* Cores do site: o ÚNICO lugar. */
+@theme {
+  --color-brand: #facc15;
+  --color-brand-fg: #0a0a0a;
+  --color-ink: #f5f5f5;
+  --color-muted: #a3a3a3;
+  --color-surface: #171717;
+  --color-line: #2a2a2a;
+  --color-page: #0a0a0a;
+}
+
+.xadrez {
+  background-image: conic-gradient(#f5f5f5 25%, #0a0a0a 0 50%, #f5f5f5 0 75%, #0a0a0a 0);
+  background-size: 24px 24px;
+}
+
+/* Fundo: asfalto — cinza-escuro liso com granulado fino, sem brilho */
+.fundo {
+  background-color: #141417;
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    radial-gradient(rgba(0, 0, 0, 0.35) 1px, transparent 1px);
+  background-size: 7px 7px, 11px 11px;
+  background-position: 0 0, 3px 5px;
+}
+
+/* Zebra de pista (vermelho e branco) */
+.zebra {
+  background-image: repeating-linear-gradient(90deg, #dc2626 0 32px, #f5f5f5 32px 64px);
+}
+
+.titulo-arcoiris {
+  background: linear-gradient(90deg, #facc15, #f97316, #ec4899, #a855f7, #3b82f6, #22c55e);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.vidro {
+  background-color: rgba(23, 23, 23, 0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
