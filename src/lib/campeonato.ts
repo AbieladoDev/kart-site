@@ -8,7 +8,7 @@ export type Etapa = {
 }
 
 export const etapas: Etapa[] = [
-  { numero: 1, data: "08/11", local: "P1000", hora: "15h20" },
+  { numero: 1, data: "08/11", local: "Autódromo Fueltech Velopark", hora: "15h20" },
   { numero: 2, data: "A definir", local: "A definir" },
   { numero: 3, data: "A definir", local: "A definir" },
 ]

@@ -36,8 +36,8 @@ export default function Home() {
           Kart <span className="titulo-arcoiris pr-2">P1000</span>
         </h1>
         <p className="mt-4 max-w-xl text-muted">
-          {totalPilotos} pilotos em {equipes.length} equipes. Largada às {corrida.largada} — estar no
-          local às {corrida.chegada}, sem consumir álcool antes da corrida.
+          {totalPilotos} pilotos em {equipes.length} equipes no {corrida.local}. Largada às{" "}
+          {corrida.largada} — estar no local às {corrida.chegada}, sem consumir álcool antes da corrida.
         </p>
 
         <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -49,7 +49,7 @@ export default function Home() {
             >
               <Icone className="size-5" style={{ color: cor }} />
               <div className="mt-3 text-xs uppercase tracking-widest text-muted">{titulo}</div>
-              <div className="text-xl font-bold">{valor}</div>
+              <div className="text-xl font-bold leading-tight">{valor}</div>
             </div>
           ))}
         </div>

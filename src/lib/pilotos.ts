@@ -100,7 +100,7 @@ export function corTexto(hex: string): string {
 export const totalPilotos = equipes.reduce((s, e) => s + e.pilotos.length, 0)
 
 export const corrida = {
-  local: "P1000",
+  local: "Autódromo Fueltech Velopark",
   data: "08/11",
   diaSemana: "Domingo",
   chegada: "14h00",
