@@ -4,7 +4,12 @@ import "./globals.css"
 export const metadata: Metadata = {
   title: "Kart P1000 — 08/11",
   description: "Grid da corrida de kart da galera: domingo, 08/11, largada 15h20.",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ||
+      (process.env.VERCEL_PROJECT_PRODUCTION_URL
+        ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+        : "http://localhost:3000"),
+  ),
 }
 
 export const viewport: Viewport = {
