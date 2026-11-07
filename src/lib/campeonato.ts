@@ -21,6 +21,8 @@ export type Etapa = {
   chegada?: string
   /** horário de Brasília, para a contagem regressiva */
   iso?: string
+  /** Desenho do traçado: caminho SVG fechado num viewBox 300×180, começando na linha de chegada (x≈122, y=140). */
+  tracado?: string
   resultado: Resultado[]
 }
 
@@ -32,6 +34,9 @@ export const etapas: Etapa[] = [
     hora: "15h20",
     chegada: "14h00",
     iso: "2026-11-08T15:20:00-03:00",
+    // ⚠️ Traçado ILUSTRATIVO — não é o desenho oficial do kartódromo. Trocar pelo real quando tiver.
+    tracado:
+      "M40 140 L200 140 C240 140 262 128 262 100 C262 74 240 64 218 72 L170 92 C150 100 136 90 140 72 C144 52 168 46 196 44 L240 40 C262 38 270 22 252 16 L90 16 C56 16 40 32 40 58 C40 80 60 88 82 84 L110 78 C126 76 128 96 112 102 L60 112 C44 116 40 126 40 140 Z",
     resultado: [],
   },
   { numero: 2, data: "A definir", local: "A definir", resultado: [] },

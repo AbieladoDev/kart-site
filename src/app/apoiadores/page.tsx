@@ -3,6 +3,7 @@ import { liga } from "@/lib/liga"
 import { equipes, pilotos, totalPilotos } from "@/lib/pilotos"
 import { etapas } from "@/lib/campeonato"
 import { FigurinhaFrente } from "@/components/figurinha"
+import { ListaApoiadores } from "@/components/lista-apoiadores"
 
 export const metadata: Metadata = { title: "Apoie a temporada" }
 
@@ -98,33 +99,7 @@ export default function Apoiadores() {
             Patrocinador master: <span className="font-semibold text-ink">{liga.master.nome}</span>
           </p>
         )}
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {liga.apoiadores.length > 0
-            ? liga.apoiadores.map((a) => (
-                <a
-                  key={a.nome}
-                  href={a.link}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex h-28 items-center justify-center rounded-2xl border border-line bg-surface p-5 text-center font-semibold"
-                >
-                  {a.logo ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={a.logo} alt={a.nome} className="max-h-full max-w-full object-contain" />
-                  ) : (
-                    a.nome
-                  )}
-                </a>
-              ))
-            : Array.from({ length: 4 }, (_, i) => (
-                <div
-                  key={i}
-                  className="flex h-28 items-center justify-center rounded-2xl border-2 border-dashed border-line text-center text-sm font-semibold text-muted"
-                >
-                  Espaço livre para a sua marca
-                </div>
-              ))}
-        </div>
+        <ListaApoiadores />
       </section>
     </div>
   )

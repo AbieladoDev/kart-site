@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ChevronLeft, ChevronRight } from "lucide-react"
-import { acharPiloto, overall, pilotos, slugify } from "@/lib/pilotos"
+import { acharPiloto, pilotos, slugify } from "@/lib/pilotos"
 import { estatisticas, posicaoDe } from "@/lib/campeonato"
 import { FigurinhaFrente, FigurinhaVerso } from "@/components/figurinha"
 import { FigurinhaDupla } from "@/components/figurinha-viva"
@@ -27,7 +27,6 @@ export default async function PaginaPiloto({ params }: Props) {
 
   const s = estatisticas(p.slug)
   const pos = posicaoDe(p.slug)
-  const ovr = overall(p.atributos)
   const i = pilotos.indexOf(p)
   const anterior = pilotos[(i - 1 + pilotos.length) % pilotos.length]
   const proximo = pilotos[(i + 1) % pilotos.length]
@@ -40,7 +39,6 @@ export default async function PaginaPiloto({ params }: Props) {
     { rotulo: "Vitórias", valor: s.vitorias },
     { rotulo: "Pódios", valor: s.podios },
     { rotulo: "Melhor volta", valor: s.melhorVolta ?? "—" },
-    { rotulo: "Overall", valor: ovr ?? "??" },
   ]
 
   return (
@@ -76,9 +74,9 @@ export default async function PaginaPiloto({ params }: Props) {
           <p className="mt-2 font-display text-3xl font-black italic text-brand">#{p.numero}</p>
           {p.frase && <p className="mt-6 max-w-md text-lg italic text-muted">“{p.frase}”</p>}
 
-          <dl className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-3">
-            {numeros.map((n) => (
-              <div key={n.rotulo} className="bg-surface p-4">
+          <dl className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-6">
+            {numeros.map((n, i) => (
+              <div key={n.rotulo} className={`bg-surface p-4 ${i < 2 ? "sm:col-span-3" : "sm:col-span-2"} ${i === numeros.length - 1 ? "col-span-2 sm:col-span-2" : ""}`}>
                 <dt className="text-sm text-muted">{n.rotulo}</dt>
                 <dd className="mt-1 font-display text-3xl font-black italic tabular-nums">{n.valor}</dd>
               </div>

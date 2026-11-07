@@ -1,26 +1,29 @@
 import Link from "next/link"
 import { Beef, Beer, Clock, Flag, MapPin, Trophy } from "lucide-react"
 import { liga } from "@/lib/liga"
-import { acharPiloto, equipes, pilotos, slugify, totalPilotos } from "@/lib/pilotos"
+import { equipes, pilotos, slugify, totalPilotos } from "@/lib/pilotos"
 import { classificacao, etapas, proximaEtapa, temResultado } from "@/lib/campeonato"
 import { FigurinhaFrente } from "@/components/figurinha"
 import { FigurinhaViva } from "@/components/figurinha-viva"
 import { Contagem } from "./contagem"
+import { TracadoPista } from "@/components/tracado-pista"
+import { ListaApoiadores } from "@/components/lista-apoiadores"
 
-// Figurinhas em leque no topo: as que já têm foto primeiro.
-const destaque = [
-  acharPiloto("darby-biehl"),
-  acharPiloto("arthur-biehl"),
-  ...pilotos.filter((p) => !p.foto),
-]
-  .filter((p) => p !== undefined)
-  .slice(0, 3)
+// Figurinhas em leque no topo: só as que têm foto (sem foto só entra se faltar para completar 3).
+// Figurinhas em leque no topo: todas as que têm foto (até 5). Sem foto só entra para completar 3.
+const comFoto = pilotos.filter((p) => p.foto)
+const destaque = [...comFoto, ...pilotos.filter((p) => !p.foto)].slice(0, Math.min(5, Math.max(3, comFoto.length)))
 
-const leque = [
-  "-rotate-[9deg] translate-y-6 -mr-[18%]",
-  "z-10 -translate-y-2",
-  "rotate-[9deg] translate-y-6 -ml-[18%]",
-]
+/** Posição de cada carta no leque: gira e desce conforme se afasta do centro; o centro fica por cima. */
+function noLeque(i: number, total: number): React.CSSProperties {
+  const d = i - (total - 1) / 2
+  return {
+    rotate: `${d * 7}deg`,
+    translate: `0 ${Math.abs(d) * Math.abs(d) * 0.6 + Math.abs(d) * 0.4}rem`,
+    zIndex: 10 - Math.round(Math.abs(d) * 2),
+    marginLeft: i === 0 ? 0 : "-14%",
+  }
+}
 
 const roteiro = [
   {
@@ -90,7 +93,8 @@ export default function Home() {
             <Link
               key={p.slug}
               href={`/pilotos/${p.slug}`}
-              className={`w-[38%] max-w-56 shrink-0 ${leque[i]}`}
+              className="w-[30%] max-w-52 shrink-0"
+              style={noLeque(i, destaque.length)}
               aria-label={`Figurinha de ${p.nome}`}
             >
               <FigurinhaViva>
@@ -104,7 +108,7 @@ export default function Home() {
       {/* Próxima etapa: placa de cronometragem */}
       {proximaEtapa && (
         <section className="border-y border-line bg-black/40">
-          <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 lg:grid-cols-[1fr_auto] lg:items-center">
+          <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 lg:grid-cols-[1fr_auto_auto] lg:items-center lg:gap-12">
             <div>
               <h2 className="font-display text-3xl font-black uppercase italic sm:text-4xl">
                 Etapa {proximaEtapa.numero}
@@ -125,8 +129,10 @@ export default function Home() {
                   </li>
                 )}
               </ul>
-              <p className="mt-3 text-sm text-muted">Álcool só depois da bandeirada.</p>
             </div>
+            {proximaEtapa.tracado && (
+              <TracadoPista d={proximaEtapa.tracado} nome={proximaEtapa.local} className="mx-auto w-full max-w-72 lg:w-64" />
+            )}
             {proximaEtapa.iso && <Contagem alvo={proximaEtapa.iso} />}
           </div>
         </section>
@@ -229,6 +235,22 @@ export default function Home() {
             })}
           </ul>
         </div>
+      </section>
+
+      {/* Apoiadores: logos de quem já apoia; vazio = espaços livres */}
+      <section className="mx-auto max-w-6xl px-4 pt-20">
+        <div className="mb-5 flex items-baseline justify-between gap-4">
+          <h2 className="font-display text-3xl font-black uppercase italic">Apoiadores</h2>
+          <Link href="/apoiadores" className="text-sm font-semibold text-muted hover:text-ink">
+            Ver cotas
+          </Link>
+        </div>
+        {liga.master && (
+          <p className="mb-4 text-muted">
+            Patrocinador master: <span className="font-semibold text-ink">{liga.master.nome}</span>
+          </p>
+        )}
+        <ListaApoiadores />
       </section>
 
       {/* Chamada para apoiadores */}

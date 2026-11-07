@@ -81,7 +81,7 @@ export const equipes: Equipe[] = [
     nome: "Avalanche GP",
     cor1: "#f8fafc", cor2: "#1d4ed8", cor3: "#dc2626",
     desenho: "chevron", emblema: Mountain,
-    pilotos: [{ nome: "Cristian", numero: 11, foto: "/pilotos/cristian.png" }, { nome: "Gilson", numero: 27 }],
+    pilotos: [{ nome: "Cristian", numero: 11, foto: "/pilotos/cristian.png" }, { nome: "Gilson", numero: 27, foto: "/pilotos/gilson.png" }],
   },
   {
     nome: "Dinastia Dourada",

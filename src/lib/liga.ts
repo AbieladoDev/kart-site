@@ -1,6 +1,7 @@
 // Identidade do grupo. Trocar o nome aqui troca no site inteiro (selo, figurinhas, título).
 
-export type Marca = { nome: string; logo?: string; link?: string }
+// `descricao` = linha curta embaixo do nome no card de apoiador (opcional).
+export type Marca = { nome: string; logo?: string; link?: string; descricao?: string }
 
 export const liga = {
   nome: "AMG Kart",

@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { Clock, Flag, MapPin } from "lucide-react"
 import { acharPiloto } from "@/lib/pilotos"
+import { TracadoPista } from "@/components/tracado-pista"
 import { etapas, pontuacao, proximaEtapa } from "@/lib/campeonato"
 
 export const metadata: Metadata = { title: "Calendário" }
@@ -22,7 +23,7 @@ export default function Calendario() {
           return (
             <li
               key={et.numero}
-              className={`grid gap-4 rounded-2xl border p-5 sm:grid-cols-[7rem_1fr] sm:p-6 ${
+              className={`grid gap-4 rounded-2xl border p-5 sm:grid-cols-[7rem_1fr_auto] sm:items-center sm:p-6 ${
                 proxima ? "border-brand bg-brand/10" : "border-line bg-surface"
               }`}
             >
@@ -77,6 +78,9 @@ export default function Calendario() {
                   </ol>
                 )}
               </div>
+              {et.tracado && (
+                <TracadoPista d={et.tracado} nome={et.local} className="w-full max-w-64 sm:w-56" />
+              )}
             </li>
           )
         })}

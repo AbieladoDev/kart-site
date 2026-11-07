@@ -1,6 +1,6 @@
 import { UserRound } from "lucide-react"
 import { liga } from "@/lib/liga"
-import { corTexto, overall, pintura, totalPilotos, type PilotoNoGrid } from "@/lib/pilotos"
+import { corTexto, pintura, type PilotoNoGrid } from "@/lib/pilotos"
 import { estatisticas, posicaoDe } from "@/lib/campeonato"
 import { SeloLiga } from "./logo"
 
@@ -10,7 +10,6 @@ import { SeloLiga } from "./logo"
  * Proporção 5:7, papel branco com borda de corte, pintura da equipe por baixo.
  */
 
-const nn = (n: number) => String(n).padStart(2, "0")
 
 function Papel({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   // O container fica num wrapper: `cqi` usado no PRÓPRIO elemento container é medido contra o
@@ -38,7 +37,6 @@ export function FigurinhaFrente({ p }: { p: PilotoNoGrid }) {
   const Emblema = e.emblema
   const tinta = corTexto(e.cor1)
   const tintaPlaca = corTexto(e.cor2)
-  const ovr = overall(p.atributos)
 
   return (
     <Papel>
@@ -79,7 +77,7 @@ export function FigurinhaFrente({ p }: { p: PilotoNoGrid }) {
           </div>
         )}
 
-        {/* topo: número + overall à esquerda, selo do grupo à direita */}
+        {/* topo: número à esquerda, selo do grupo à direita */}
         <div className="absolute inset-x-[4.5cqi] top-[4cqi] flex items-start justify-between">
           <div>
             <div
@@ -87,13 +85,6 @@ export function FigurinhaFrente({ p }: { p: PilotoNoGrid }) {
               style={{ color: tinta, textShadow: `0.8cqi 0.8cqi 0 ${e.cor2}` }}
             >
               {p.numero}
-            </div>
-            <div
-              className="mt-[2cqi] inline-flex items-baseline gap-[1.2cqi] rounded-[1.2cqi] px-[1.8cqi] py-[0.6cqi] font-display font-extrabold"
-              style={{ background: e.cor2, color: tintaPlaca }}
-            >
-              <span className="text-[6.5cqi] leading-none">{ovr ?? "??"}</span>
-              <span className="text-[3.2cqi] tracking-wider">OVR</span>
             </div>
           </div>
           <SeloLiga title={false} className="w-[21cqi] -rotate-12 drop-shadow-[0_1cqi_1cqi_rgba(0,0,0,0.5)]" />
@@ -122,11 +113,8 @@ export function FigurinhaFrente({ p }: { p: PilotoNoGrid }) {
               <div className="truncate font-display text-[10cqi] font-black uppercase italic leading-[0.95]">
                 {p.nome}
               </div>
-              <div className="mt-[0.6cqi] flex items-center justify-between gap-[2cqi] text-[3.8cqi] font-semibold uppercase tracking-[0.12em] opacity-85">
-                <span className="truncate">{e.nome}</span>
-                <span className="shrink-0 tabular-nums">
-                  {nn(p.figurinha)}/{totalPilotos}
-                </span>
+              <div className="mt-[0.6cqi] truncate text-[3.8cqi] font-semibold uppercase tracking-[0.12em] opacity-85">
+                {e.nome}
               </div>
             </div>
           </div>
@@ -156,7 +144,6 @@ function Dado({ rotulo, valor, grande = false }: { rotulo: string; valor: React.
 
 export function FigurinhaVerso({ p }: { p: PilotoNoGrid }) {
   const e = p.equipe
-  const a = p.atributos
   const s = estatisticas(p.slug)
   const pos = posicaoDe(p.slug)
   const ficha = [
@@ -178,13 +165,6 @@ export function FigurinhaVerso({ p }: { p: PilotoNoGrid }) {
             <div className="font-display text-[12cqi] font-black italic leading-none" style={{ color: e.cor1 === "#0a0a0a" ? e.cor2 : e.cor1 }}>
               {p.numero}
             </div>
-          </div>
-
-          <div className="grid grid-cols-4 gap-[2cqi]">
-            <Dado rotulo="Vel" valor={a?.velocidade ?? "??"} />
-            <Dado rotulo="Con" valor={a?.consistencia ?? "??"} />
-            <Dado rotulo="Ult" valor={a?.ultrapassagem ?? "??"} />
-            <Dado rotulo="Lar" valor={a?.largada ?? "??"} />
           </div>
 
           <div className="rounded-[2.5cqi] bg-black/30 p-[3.5cqi]">
@@ -218,8 +198,6 @@ export function FigurinhaVerso({ p }: { p: PilotoNoGrid }) {
           <div className="flex items-center justify-between gap-[3cqi]">
             <SeloLiga title={false} className="w-[13cqi]" />
             <div className="text-right text-[3.4cqi] text-[#9a9aa6]">
-              Figurinha {nn(p.figurinha)} de {totalPilotos}
-              <br />
               {liga.nome} · {liga.temporada}
             </div>
           </div>

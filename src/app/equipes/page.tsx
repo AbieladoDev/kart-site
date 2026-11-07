@@ -1,9 +1,10 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { classificacaoEquipes, temResultado } from "@/lib/campeonato"
-import { corTexto, pilotos, pintura, slugify } from "@/lib/pilotos"
+import { pilotos, pintura, slugify } from "@/lib/pilotos"
 import { FigurinhaFrente } from "@/components/figurinha"
 import { FigurinhaViva } from "@/components/figurinha-viva"
+import { KartEquipe } from "@/components/kart-equipe"
 
 export const metadata: Metadata = { title: "Equipes" }
 
@@ -16,65 +17,63 @@ export default function Equipes() {
         equipe é a soma dos seus pilotos.
       </p>
 
-      <div className="mt-12 space-y-10">
+      {/* Uma linha por equipe: nome e números à esquerda, figurinhas lado a lado à direita. */}
+      <div className="mt-12 border-t border-line">
         {classificacaoEquipes.map(({ equipe: e, pontos, posicao }) => {
           const Emblema = e.emblema
           const doTime = pilotos.filter((p) => p.equipe === e)
-          const tinta = corTexto(e.cor1)
           return (
             <section
               key={e.nome}
               id={slugify(e.nome)}
-              className="scroll-mt-24 overflow-hidden rounded-3xl border border-line bg-surface"
+              className="grid scroll-mt-24 gap-6 border-b border-line py-6 md:grid-cols-[minmax(0,1fr)_auto_auto] md:items-center md:gap-10"
             >
-              <div className="relative h-24 sm:h-28" style={{ background: pintura(e) }}>
-                <div className="absolute inset-0 flex items-end justify-between gap-4 p-4 sm:p-6">
-                  <div className="flex items-center gap-3" style={{ color: tinta }}>
-                    <span
-                      className="flex size-12 items-center justify-center rounded-xl border-2"
-                      style={{ background: e.cor1, borderColor: e.cor3, color: e.cor3 }}
-                    >
-                      <Emblema className="size-6" />
-                    </span>
-                    <h2
-                      className="font-display text-2xl font-black uppercase italic leading-none sm:text-4xl"
-                      style={{ textShadow: `2px 2px 0 ${e.cor2}` }}
-                    >
-                      {e.nome}
-                    </h2>
-                  </div>
+              <div className="flex items-center gap-5">
+                <span className="w-1.5 shrink-0 rounded-full" style={{ background: pintura(e) }} />
+                <div className="min-w-0">
+                  <span
+                    className="flex size-9 items-center justify-center rounded-lg border-2"
+                    style={{ background: e.cor1, borderColor: e.cor2, color: e.cor2 }}
+                  >
+                    <Emblema className="size-5" />
+                  </span>
+                  <h2 className="mt-3 font-display text-2xl font-black uppercase italic leading-[0.9] sm:text-3xl">
+                    {e.nome}
+                  </h2>
+                  <p className="mt-1 text-sm text-muted">{doTime.map((p) => p.nome).join(" e ")}</p>
+                  <dl className="mt-4 flex gap-8">
+                    <div>
+                      <dt className="text-xs text-muted">Pontos</dt>
+                      <dd className="font-display text-2xl font-black italic tabular-nums">{pontos}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-xs text-muted">Posição</dt>
+                      <dd className="font-display text-2xl font-black italic tabular-nums">
+                        {temResultado ? `${posicao}º` : "—"}
+                      </dd>
+                    </div>
+                  </dl>
+                  {e.patrocinador && (
+                    <p className="mt-4 text-sm text-muted">
+                      Patrocínio: <span className="font-semibold text-ink">{e.patrocinador.nome}</span>
+                    </p>
+                  )}
                 </div>
               </div>
-              <div className="grid gap-8 p-4 sm:p-6 md:grid-cols-[1fr_auto] md:items-center">
-                <ul className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:max-w-2xl">
-                  {doTime.map((p) => (
-                    <li key={p.slug}>
-                      <Link href={`/pilotos/${p.slug}`} aria-label={`Figurinha de ${p.nome}`} className="block">
-                        <FigurinhaViva>
-                          <FigurinhaFrente p={p} />
-                        </FigurinhaViva>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-                <dl className="flex gap-8 md:flex-col md:gap-4 md:text-right">
-                  <div>
-                    <dt className="text-sm text-muted">Pontos</dt>
-                    <dd className="font-display text-5xl font-black italic tabular-nums">{pontos}</dd>
-                  </div>
-                  <div>
-                    <dt className="text-sm text-muted">Posição</dt>
-                    <dd className="font-display text-5xl font-black italic tabular-nums">
-                      {temResultado ? `${posicao}º` : "—"}
-                    </dd>
-                  </div>
-                </dl>
-              </div>
-              {e.patrocinador && (
-                <p className="border-t border-line px-6 py-3 text-sm text-muted">
-                  Patrocínio: <span className="font-semibold text-ink">{e.patrocinador.nome}</span>
-                </p>
-              )}
+
+              <KartEquipe e={e} className="w-44 lg:w-56" />
+
+              <ul className="flex gap-3 sm:gap-4">
+                {doTime.map((p) => (
+                  <li key={p.slug} className="w-32 min-w-0 sm:w-36">
+                    <Link href={`/pilotos/${p.slug}`} aria-label={`Figurinha de ${p.nome}`} className="block">
+                      <FigurinhaViva>
+                        <FigurinhaFrente p={p} />
+                      </FigurinhaViva>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </section>
           )
         })}

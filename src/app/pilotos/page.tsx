@@ -22,29 +22,16 @@ export default function Album() {
         texto={`Álbum de figurinhas da ${liga.nome} ${liga.temporada}: ${totalPilotos} pilotos, ${equipes.length} equipes 🏁`}
       />
 
-      <div className="mt-12 space-y-16">
+      {/* Cada equipe é um bloco: as figurinhas da dupla lado a lado e o nome da equipe embaixo. */}
+      <div className="mt-12 grid gap-x-10 gap-y-14 md:grid-cols-2 lg:grid-cols-3">
         {equipes.map((e) => {
           const Emblema = e.emblema
           const doTime = pilotos.filter((p) => p.equipe === e)
           return (
             <section key={e.nome} aria-labelledby={`eq-${doTime[0].slug}`}>
-              <header className="mb-6 flex items-center gap-3 border-b border-line pb-3">
-                <span
-                  className="flex size-10 shrink-0 items-center justify-center rounded-lg border-2"
-                  style={{ background: e.cor1, borderColor: e.cor2, color: e.cor2 }}
-                >
-                  <Emblema className="size-5" />
-                </span>
-                <h2 id={`eq-${doTime[0].slug}`} className="font-display text-2xl font-black uppercase italic">
-                  {e.nome}
-                </h2>
-                <span className="ml-auto text-sm tabular-nums text-muted">
-                  nº {String(doTime[0].figurinha).padStart(2, "0")}–{String(doTime.at(-1)!.figurinha).padStart(2, "0")}
-                </span>
-              </header>
-              <ul className="grid grid-cols-2 gap-5 sm:grid-cols-3 sm:gap-6 lg:grid-cols-5">
+              <ul className="flex gap-4">
                 {doTime.map((p) => (
-                  <li key={p.slug}>
+                  <li key={p.slug} className="min-w-0 flex-1">
                     <Link href={`/pilotos/${p.slug}`} aria-label={`Figurinha de ${p.nome}`} className="block">
                       <FigurinhaViva>
                         <FigurinhaFrente p={p} />
@@ -53,6 +40,25 @@ export default function Album() {
                   </li>
                 ))}
               </ul>
+              <footer className="mt-5 flex items-center gap-3">
+                <span
+                  className="flex size-9 shrink-0 items-center justify-center rounded-lg border-2"
+                  style={{ background: e.cor1, borderColor: e.cor2, color: e.cor2 }}
+                >
+                  <Emblema className="size-5" />
+                </span>
+                <h2 id={`eq-${doTime[0].slug}`} className="min-w-0 flex-1 truncate font-display text-xl font-black uppercase italic">
+                  {e.nome}
+                </h2>
+                <span className="text-sm tabular-nums text-muted">
+                  nº {String(doTime[0].figurinha).padStart(2, "0")}–{String(doTime.at(-1)!.figurinha).padStart(2, "0")}
+                </span>
+              </footer>
+              <div className="mt-3 flex h-1 overflow-hidden rounded-full">
+                <span className="flex-1" style={{ background: e.cor1 }} />
+                <span className="flex-1" style={{ background: e.cor2 }} />
+                <span className="flex-1" style={{ background: e.cor3 }} />
+              </div>
             </section>
           )
         })}

@@ -4,7 +4,7 @@
 import { readFile } from "node:fs/promises"
 import { join } from "node:path"
 import { liga } from "./liga"
-import { corTexto, overall, pintura, totalPilotos, type PilotoNoGrid } from "./pilotos"
+import { corTexto, pintura, type PilotoNoGrid } from "./pilotos"
 
 async function dataUri(caminhoPublico: string, tipo: string) {
   const buf = await readFile(join(process.cwd(), "public", caminhoPublico))
@@ -40,12 +40,10 @@ export async function FigurinhaImagem({ p, u }: { p: PilotoNoGrid; u: number }) 
   const e = p.equipe
   const tinta = corTexto(e.cor1)
   const tintaPlaca = corTexto(e.cor2)
-  const ovr = overall(p.atributos)
   const foto = p.foto ? await dataUri(p.foto, "image/png") : undefined
   const selo = await dataUri("marca/amg-kart-simbolo.svg", "image/svg+xml")
   const largura = 100 * u
   const interna = largura - 7 * u
-  const nn = (n: number) => String(n).padStart(2, "0")
 
   return (
     <div
@@ -132,7 +130,7 @@ export async function FigurinhaImagem({ p, u }: { p: PilotoNoGrid; u: number }) 
           </div>
         )}
 
-        {/* número + overall */}
+        {/* número */}
         <div style={{ position: "absolute", left: 4.5 * u, top: 4 * u, display: "flex", flexDirection: "column" }}>
           <div
             style={{
@@ -145,22 +143,6 @@ export async function FigurinhaImagem({ p, u }: { p: PilotoNoGrid; u: number }) 
             }}
           >
             {String(p.numero)}
-          </div>
-          <div
-            style={{
-              marginTop: 2 * u,
-              display: "flex",
-              alignItems: "baseline",
-              alignSelf: "flex-start",
-              borderRadius: 1.2 * u,
-              padding: `${0.6 * u}px ${1.8 * u}px`,
-              background: e.cor2,
-              color: tintaPlaca,
-              fontWeight: 900,
-            }}
-          >
-            <span style={{ fontSize: 6.5 * u, lineHeight: 1 }}>{ovr === undefined ? "??" : String(ovr)}</span>
-            <span style={{ fontSize: 3.2 * u, marginLeft: 1.2 * u, fontWeight: 600 }}>OVR</span>
           </div>
         </div>
 
@@ -216,7 +198,6 @@ export async function FigurinhaImagem({ p, u }: { p: PilotoNoGrid; u: number }) 
                 style={{
                   marginTop: 0.6 * u,
                   display: "flex",
-                  justifyContent: "space-between",
                   fontSize: 3.8 * u,
                   fontWeight: 600,
                   textTransform: "uppercase",
@@ -225,9 +206,6 @@ export async function FigurinhaImagem({ p, u }: { p: PilotoNoGrid; u: number }) 
                 }}
               >
                 <span>{e.nome}</span>
-                <span>
-                  {nn(p.figurinha)}/{totalPilotos}
-                </span>
               </div>
             </div>
           </div>
