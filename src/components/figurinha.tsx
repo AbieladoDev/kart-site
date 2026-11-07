@@ -2,7 +2,7 @@ import { UserRound } from "lucide-react"
 import { liga } from "@/lib/liga"
 import { corTexto, overall, pintura, totalPilotos, type PilotoNoGrid } from "@/lib/pilotos"
 import { estatisticas, posicaoDe } from "@/lib/campeonato"
-import { SeloAmigos } from "./logo"
+import { SeloLiga } from "./logo"
 
 /*
  * Figurinha de colecionar. Tudo é medido em `cqi` (largura do próprio cartão),
@@ -13,11 +13,13 @@ import { SeloAmigos } from "./logo"
 const nn = (n: number) => String(n).padStart(2, "0")
 
 function Papel({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  // O container fica num wrapper: `cqi` usado no PRÓPRIO elemento container é medido contra o
+  // container de fora (ou a tela), não contra ele — a moldura virava uma pílula gigante.
   return (
-    <div
-      className={`@container relative aspect-[5/7] w-full rounded-[6cqi] bg-[#f4f2ea] p-[3cqi] shadow-[0_18px_30px_-14px_rgba(0,0,0,0.85)] ${className}`}
-    >
-      {children}
+    <div className={`@container w-full ${className}`}>
+      <div className="relative aspect-[5/7] w-full rounded-[7cqi] bg-[#f4f2ea] p-[3.5cqi] shadow-[0_18px_30px_-14px_rgba(0,0,0,0.85)]">
+        {children}
+      </div>
     </div>
   )
 }
@@ -40,7 +42,7 @@ export function FigurinhaFrente({ p }: { p: PilotoNoGrid }) {
 
   return (
     <Papel>
-      <div className="relative size-full overflow-hidden rounded-[3.5cqi]" style={{ background: pintura(e) }}>
+      <div className="relative size-full overflow-hidden rounded-[3.5cqi] shadow-[0_0_0_0.4cqi_rgba(0,0,0,0.14)]" style={{ background: pintura(e) }}>
         <div className="reticula absolute inset-0 opacity-40" />
 
         {/* número gigante ao fundo */}
@@ -52,24 +54,30 @@ export function FigurinhaFrente({ p }: { p: PilotoNoGrid }) {
           {p.numero}
         </div>
 
-        {/* foto recortada (ou silhueta) */}
-        <div className="absolute inset-x-[6cqi] bottom-[26cqi] top-[20cqi] flex items-end justify-center">
-          {p.foto ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={p.foto}
-              alt={p.nome}
-              className="max-h-full max-w-full object-contain object-bottom drop-shadow-[0_2cqi_2cqi_rgba(0,0,0,0.45)]"
+        {/* foto: ocupa a figurinha inteira, sem moldura, e se funde na pintura em cima e embaixo */}
+        {p.foto ? (
+          <div className="absolute inset-x-0 top-0 bottom-[16cqi]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={p.foto} alt={p.nome} className="size-full object-cover object-[50%_20%]" />
+            <div
+              className="absolute inset-x-0 top-0 h-[42cqi]"
+              style={{ background: `linear-gradient(to bottom, ${e.cor1}e6, ${e.cor1}80 45%, transparent)` }}
             />
-          ) : (
+            <div
+              className="absolute inset-x-0 bottom-0 h-[24cqi]"
+              style={{ background: `linear-gradient(to top, ${e.cor2}, transparent)` }}
+            />
+          </div>
+        ) : (
+          <div className="absolute inset-x-[6cqi] bottom-[26cqi] top-[20cqi] flex items-end justify-center">
             <UserRound
               aria-label={`${p.nome} (sem foto)`}
               className="h-full w-auto translate-y-[8%]"
               strokeWidth={1.25}
               style={{ color: e.cor3, opacity: 0.85 }}
             />
-          )}
-        </div>
+          </div>
+        )}
 
         {/* topo: número + overall à esquerda, selo do grupo à direita */}
         <div className="absolute inset-x-[4.5cqi] top-[4cqi] flex items-start justify-between">
@@ -88,7 +96,7 @@ export function FigurinhaFrente({ p }: { p: PilotoNoGrid }) {
               <span className="text-[3.2cqi] tracking-wider">OVR</span>
             </div>
           </div>
-          <SeloAmigos title={false} className="w-[21cqi] -rotate-12 drop-shadow-[0_1cqi_1cqi_rgba(0,0,0,0.5)]" />
+          <SeloLiga title={false} className="w-[21cqi] -rotate-12 drop-shadow-[0_1cqi_1cqi_rgba(0,0,0,0.5)]" />
         </div>
 
         {/* patrocinador master, se houver */}
@@ -158,7 +166,7 @@ export function FigurinhaVerso({ p }: { p: PilotoNoGrid }) {
 
   return (
     <Papel>
-      <div className="relative flex size-full flex-col overflow-hidden rounded-[3.5cqi] bg-[#1c1c22] text-[#ecebe6]">
+      <div className="relative flex size-full flex-col overflow-hidden rounded-[3.5cqi] shadow-[0_0_0_0.4cqi_rgba(0,0,0,0.14)] bg-[#1c1c22] text-[#ecebe6]">
         <div className="h-[9cqi] shrink-0" style={{ background: pintura(e) }} />
 
         <div className="flex flex-1 flex-col gap-[4.5cqi] px-[5cqi] pt-[4cqi] pb-[4cqi]">
@@ -208,7 +216,7 @@ export function FigurinhaVerso({ p }: { p: PilotoNoGrid }) {
           </div>
 
           <div className="flex items-center justify-between gap-[3cqi]">
-            <SeloAmigos title={false} className="w-[13cqi]" />
+            <SeloLiga title={false} className="w-[13cqi]" />
             <div className="text-right text-[3.4cqi] text-[#9a9aa6]">
               Figurinha {nn(p.figurinha)} de {totalPilotos}
               <br />

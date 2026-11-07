@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { LogoAmigos } from "./logo"
+import { LogoLiga } from "./logo"
 
 const links = [
   { href: "/pilotos", rotulo: "Álbum" },
@@ -18,7 +18,7 @@ export function Cabecalho() {
     <header className="sticky top-0 z-40 border-b border-line bg-page/85 backdrop-blur-md">
       <div className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-2.5">
         <Link href="/" aria-label="Início" className="shrink-0">
-          <LogoAmigos className="h-10 text-xl" />
+          <LogoLiga className="h-10 text-xl" />
         </Link>
         <nav aria-label="Principal" className="-mr-4 ml-auto overflow-x-auto pr-4">
           <ul className="flex gap-1 whitespace-nowrap">

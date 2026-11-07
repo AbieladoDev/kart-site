@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Clock, Flag, MapPin } from "lucide-react"
+import { Beef, Beer, Clock, Flag, MapPin, Trophy } from "lucide-react"
 import { liga } from "@/lib/liga"
 import { acharPiloto, equipes, pilotos, slugify, totalPilotos } from "@/lib/pilotos"
 import { classificacao, etapas, proximaEtapa, temResultado } from "@/lib/campeonato"
@@ -22,6 +22,25 @@ const leque = [
   "rotate-[9deg] translate-y-6 -ml-[18%]",
 ]
 
+const roteiro = [
+  {
+    icone: Flag,
+    titulo: "Acelera",
+    texto: "Capacete, bandeira verde e disputa curva por curva. Na pista, amizade fica no box.",
+  },
+  {
+    icone: Trophy,
+    titulo: "Pódio e resenha",
+    texto: "Quem ganhou comemora, quem rodou explica. Revanche marcada para a próxima etapa.",
+  },
+  {
+    icone: Beef,
+    titulo: "Churrasco e gelada",
+    texto: "Fogo aceso, carne na grelha e cerveja liberada — só agora, com todo mundo fora do kart.",
+    destaque: true,
+  },
+]
+
 export default function Home() {
   const top = classificacao.slice(0, 5)
 
@@ -36,9 +55,19 @@ export default function Home() {
           <h1 className="mt-2 font-display text-6xl font-black uppercase italic leading-[0.85] tracking-tight sm:text-8xl">
             {liga.nome}
           </h1>
-          <p className="mt-6 max-w-md text-lg leading-relaxed text-muted">
-            {totalPilotos} amigos, {equipes.length} equipes e {etapas.length} etapas valendo pontos. Cada piloto tem
-            a sua figurinha — e o álbum vai sendo preenchido corrida a corrida.
+          <p className="mt-7 flex items-end gap-3">
+            <span className="font-display text-7xl font-black italic leading-[0.8] text-brand sm:text-8xl">
+              {totalPilotos}
+            </span>
+            <span className="pb-1 font-display text-2xl font-extrabold uppercase italic leading-[0.95] sm:text-3xl">
+              amigos
+              <br />
+              no grid
+            </span>
+          </p>
+          <p className="mt-5 max-w-md text-lg leading-relaxed text-muted">
+            Na pista ninguém alivia. Depois da bandeirada é resenha, churrasco e a gelada que ficou esperando.{" "}
+            {equipes.length} equipes, {etapas.length} etapas e uma figurinha para cada piloto.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
@@ -102,6 +131,38 @@ export default function Home() {
           </div>
         </section>
       )}
+
+      {/* O dia de corrida: acelera, resenha, churrasco — a ordem importa (álcool só no fim) */}
+      <section className="mx-auto max-w-6xl px-4 pt-20">
+        <h2 className="max-w-2xl font-display text-4xl font-black uppercase italic leading-[0.9] sm:text-5xl">
+          Corrida boa termina em churrasco
+        </h2>
+        <p className="mt-4 max-w-xl text-muted">
+          O campeonato é desculpa para juntar a turma. Cada etapa segue o mesmo roteiro, nesta ordem.
+        </p>
+
+        <ol className="mt-10 grid gap-px overflow-hidden rounded-3xl border border-line bg-line md:grid-cols-3">
+          {roteiro.map(({ icone: Icone, titulo, texto, destaque: forte }, i) => (
+            <li key={titulo} className={`relative p-6 sm:p-8 ${forte ? "bg-brand text-brand-fg" : "bg-surface"}`}>
+              <div className="flex items-center justify-between">
+                <Icone className={`size-8 ${forte ? "" : "text-brand"}`} strokeWidth={1.75} />
+                <span
+                  className={`font-display text-5xl font-black italic leading-none ${forte ? "text-brand-fg/25" : "text-white/10"}`}
+                >
+                  {i + 1}
+                </span>
+              </div>
+              <h3 className="mt-6 font-display text-2xl font-black uppercase italic leading-none">{titulo}</h3>
+              <p className={`mt-3 leading-relaxed ${forte ? "font-medium" : "text-muted"}`}>{texto}</p>
+            </li>
+          ))}
+        </ol>
+
+        <p className="mt-5 flex items-center gap-2.5 text-sm font-semibold">
+          <Beer className="size-5 text-brand" />
+          Regra do grupo: cerveja só depois de descer do kart. Quem bebe não pilota.
+        </p>
+      </section>
 
       {/* Classificação resumida + equipes */}
       <section className="mx-auto grid max-w-6xl gap-12 px-4 pt-16 lg:grid-cols-2">

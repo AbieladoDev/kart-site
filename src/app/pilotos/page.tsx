@@ -36,7 +36,7 @@ export default function Album() {
                   nº {String(doTime[0].figurinha).padStart(2, "0")}–{String(doTime.at(-1)!.figurinha).padStart(2, "0")}
                 </span>
               </header>
-              <ul className="grid grid-cols-2 gap-x-5 gap-y-8 sm:grid-cols-3 lg:grid-cols-5">
+              <ul className="grid grid-cols-2 gap-5 sm:grid-cols-3 sm:gap-6 lg:grid-cols-5">
                 {doTime.map((p) => (
                   <li key={p.slug}>
                     <Link href={`/pilotos/${p.slug}`} aria-label={`Figurinha de ${p.nome}`} className="block">

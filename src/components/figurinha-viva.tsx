@@ -58,7 +58,7 @@ export function FigurinhaDupla({
           type="button"
           onClick={() => setNoVerso((v) => !v)}
           aria-label={noVerso ? `Ver a frente da figurinha de ${nome}` : `Ver o verso da figurinha de ${nome}`}
-          className="virar grid w-full cursor-pointer rounded-[6%] text-left"
+          className="virar grid w-full cursor-pointer rounded-[7%/5%] text-left"
           data-verso={noVerso}
         >
           <div className="face [grid-area:1/1]">{frente}</div>

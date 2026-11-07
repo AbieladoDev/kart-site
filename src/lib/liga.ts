@@ -3,8 +3,8 @@
 export type Marca = { nome: string; logo?: string; link?: string }
 
 export const liga = {
-  nome: "Amigos do Kart",
-  sigla: "ADK",
+  nome: "AMG Kart",
+  sigla: "AMG",
   modalidade: "Kart",
   temporada: 2026,
   // WhatsApp de contato para apoiadores, só dígitos com DDI: "5551999999999". Vazio = esconde o botão.

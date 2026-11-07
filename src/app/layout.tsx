@@ -3,7 +3,7 @@ import { Barlow, Saira_Condensed } from "next/font/google"
 import Link from "next/link"
 import { liga } from "@/lib/liga"
 import { Cabecalho } from "@/components/cabecalho"
-import { LogoAmigos } from "@/components/logo"
+import { LogoLiga } from "@/components/logo"
 import "./globals.css"
 
 const saira = Saira_Condensed({
@@ -50,7 +50,7 @@ export default function RootLayout({
         <footer className="mt-24 border-t border-line">
           <div className="zebra h-1.5" />
           <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-10 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
-            <LogoAmigos className="h-9 text-lg text-ink" />
+            <LogoLiga className="h-9 text-lg text-ink" />
             <p>
               {liga.nome} — campeonato de {liga.modalidade.toLowerCase()} entre amigos, temporada {liga.temporada}.
             </p>
