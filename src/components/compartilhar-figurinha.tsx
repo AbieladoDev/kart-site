@@ -8,7 +8,7 @@ import { Share2 } from "lucide-react"
  * No celular abre a folha de compartilhar do sistema (WhatsApp, status, Instagram...).
  * Onde o navegador não compartilha arquivo (a maioria dos computadores), baixa o PNG.
  */
-export function CompartilharFigurinha({ slug, texto }: { slug: string; texto: string }) {
+export function CompartilharFigurinha({ slug }: { slug: string }) {
   const [estado, setEstado] = useState<"livre" | "gerando" | "erro">("livre")
 
   async function compartilhar() {
@@ -18,7 +18,8 @@ export function CompartilharFigurinha({ slug, texto }: { slug: string; texto: st
       if (!resp.ok) throw new Error(String(resp.status))
       const blob = await resp.blob()
       const arquivo = new File([blob], `figurinha-${slug}.png`, { type: "image/png" })
-      const dados = { files: [arquivo], text: `${texto}\n${window.location.href}` }
+      // Só a imagem: sem texto nem link junto — o compartilhamento mostra só a figurinha.
+      const dados = { files: [arquivo] }
 
       if (navigator.canShare?.(dados)) {
         try {

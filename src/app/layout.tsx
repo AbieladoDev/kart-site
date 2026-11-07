@@ -58,6 +58,22 @@ export default function RootLayout({
               Quero apoiar a temporada
             </Link>
           </div>
+          <div className="mx-auto flex max-w-6xl flex-col gap-2 border-t border-line px-4 py-5 text-xs text-muted sm:flex-row sm:justify-between">
+            <p>
+              © {new Date().getFullYear()} {liga.nome}
+            </p>
+            <p>
+              Desenvolvido por{" "}
+              <a
+                href="https://db.app.br"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-ink transition-colors hover:text-brand"
+              >
+                db.app
+              </a>
+            </p>
+          </div>
         </footer>
       </body>
     </html>
