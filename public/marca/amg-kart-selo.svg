@@ -1,0 +1,62 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Selo do AMG Kart: mesma geometria do SeloLiga em src/components/logo.tsx. Gerado; não editar à mão. -->
+  <circle cx="50" cy="50" r="49" fill="#121216" />
+  <circle cx="50" cy="50" r="46.5" fill="none" stroke="#ffd400" stroke-width="1.5" />
+  <g fill="#ecebe6" font-size="8.4" font-weight="700" font-family="Saira Condensed, Arial Narrow, Arial, sans-serif">
+    <text x="12.64" y="46.73" transform="rotate(275.0 12.64 46.73)" text-anchor="middle">A</text>
+    <text x="13.78" y="40.29" transform="rotate(285.0 13.78 40.29)" text-anchor="middle">M</text>
+    <text x="16.01" y="34.15" transform="rotate(295.0 16.01 34.15)" text-anchor="middle">G</text>
+    <text x="23.48" y="23.48" transform="rotate(315.0 23.48 23.48)" text-anchor="middle">K</text>
+    <text x="28.49" y="19.28" transform="rotate(325.0 28.49 19.28)" text-anchor="middle">A</text>
+    <text x="34.15" y="16.01" transform="rotate(335.0 34.15 16.01)" text-anchor="middle">R</text>
+    <text x="40.29" y="13.78" transform="rotate(345.0 40.29 13.78)" text-anchor="middle">T</text>
+    <text x="53.27" y="12.64" transform="rotate(365.0 53.27 12.64)" text-anchor="middle">·</text>
+    <text x="65.85" y="16.01" transform="rotate(385.0 65.85 16.01)" text-anchor="middle">2</text>
+    <text x="71.51" y="19.28" transform="rotate(395.0 71.51 19.28)" text-anchor="middle">0</text>
+    <text x="76.52" y="23.48" transform="rotate(405.0 76.52 23.48)" text-anchor="middle">2</text>
+    <text x="80.72" y="28.49" transform="rotate(415.0 80.72 28.49)" text-anchor="middle">6</text>
+    <text x="86.22" y="40.29" transform="rotate(435.0 86.22 40.29)" text-anchor="middle">·</text>
+    <text x="87.36" y="53.27" transform="rotate(455.0 87.36 53.27)" text-anchor="middle">A</text>
+    <text x="86.22" y="59.71" transform="rotate(465.0 86.22 59.71)" text-anchor="middle">M</text>
+    <text x="83.99" y="65.85" transform="rotate(475.0 83.99 65.85)" text-anchor="middle">G</text>
+    <text x="76.52" y="76.52" transform="rotate(495.0 76.52 76.52)" text-anchor="middle">K</text>
+    <text x="71.51" y="80.72" transform="rotate(505.0 71.51 80.72)" text-anchor="middle">A</text>
+    <text x="65.85" y="83.99" transform="rotate(515.0 65.85 83.99)" text-anchor="middle">R</text>
+    <text x="59.71" y="86.22" transform="rotate(525.0 59.71 86.22)" text-anchor="middle">T</text>
+    <text x="46.73" y="87.36" transform="rotate(545.0 46.73 87.36)" text-anchor="middle">·</text>
+    <text x="34.15" y="83.99" transform="rotate(565.0 34.15 83.99)" text-anchor="middle">2</text>
+    <text x="28.49" y="80.72" transform="rotate(575.0 28.49 80.72)" text-anchor="middle">0</text>
+    <text x="23.48" y="76.52" transform="rotate(585.0 23.48 76.52)" text-anchor="middle">2</text>
+    <text x="19.28" y="71.51" transform="rotate(595.0 19.28 71.51)" text-anchor="middle">6</text>
+    <text x="13.78" y="59.71" transform="rotate(615.0 13.78 59.71)" text-anchor="middle">·</text>
+  </g>
+  <circle cx="50" cy="50" r="29" fill="#ffd400" />
+  <svg x="28" y="28" width="44" height="44" viewBox="0 0 64 64">
+    <g transform="translate(32 32) scale(0.84) translate(-32 -32) translate(7.5 0) skewX(-10)">
+    <path d="M5 39 L11.5 17 L18 39" fill="none" stroke="#121216" stroke-width="4.4" stroke-linejoin="bevel" stroke-linecap="butt" />
+    <path d="M7.6 31.5 H15.4" fill="none" stroke="#121216" stroke-width="4.4" stroke-linejoin="bevel" stroke-linecap="butt" />
+    <path d="M23 39 V17 L29.5 28 L36 17 V39" fill="none" stroke="#121216" stroke-width="4.4" stroke-linejoin="bevel" stroke-linecap="butt" />
+    <path d="M54 17 H42 V39 H54 V29 H48.5" fill="none" stroke="#121216" stroke-width="4.4" stroke-linejoin="bevel" stroke-linecap="butt" />
+    <rect x="5" y="45" width="4.9" height="4.6" fill="#ecebe6" />
+    <rect x="5" y="49.6" width="4.9" height="4.6" fill="#121216" />
+    <rect x="9.9" y="45" width="4.9" height="4.6" fill="#121216" />
+    <rect x="9.9" y="49.6" width="4.9" height="4.6" fill="#ecebe6" />
+    <rect x="14.8" y="45" width="4.9" height="4.6" fill="#ecebe6" />
+    <rect x="14.8" y="49.6" width="4.9" height="4.6" fill="#121216" />
+    <rect x="19.7" y="45" width="4.9" height="4.6" fill="#121216" />
+    <rect x="19.7" y="49.6" width="4.9" height="4.6" fill="#ecebe6" />
+    <rect x="24.6" y="45" width="4.9" height="4.6" fill="#ecebe6" />
+    <rect x="24.6" y="49.6" width="4.9" height="4.6" fill="#121216" />
+    <rect x="29.5" y="45" width="4.9" height="4.6" fill="#121216" />
+    <rect x="29.5" y="49.6" width="4.9" height="4.6" fill="#ecebe6" />
+    <rect x="34.4" y="45" width="4.9" height="4.6" fill="#ecebe6" />
+    <rect x="34.4" y="49.6" width="4.9" height="4.6" fill="#121216" />
+    <rect x="39.3" y="45" width="4.9" height="4.6" fill="#121216" />
+    <rect x="39.3" y="49.6" width="4.9" height="4.6" fill="#ecebe6" />
+    <rect x="44.2" y="45" width="4.9" height="4.6" fill="#ecebe6" />
+    <rect x="44.2" y="49.6" width="4.9" height="4.6" fill="#121216" />
+    <rect x="49.1" y="45" width="4.9" height="4.6" fill="#121216" />
+    <rect x="49.1" y="49.6" width="4.9" height="4.6" fill="#ecebe6" />
+  </g>
+  </svg>
+</svg>

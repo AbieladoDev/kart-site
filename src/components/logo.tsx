@@ -5,7 +5,8 @@ import { liga } from "@/lib/liga"
  * Logo do grupo "AMG Kart".
  * Símbolo: monograma AMG em traço grosso, inclinado, sobre uma faixa quadriculada de chegada.
  * Desenhado em traço (não em texto) para não depender de fonte — funciona no favicon.
- * Mesma geometria em src/app/icon.svg (favicon) — mudou aqui, mudar lá.
+ * Marca do grupo = o SELO redondo (o mesmo das figurinhas). Versões estáticas geradas em
+ * public/marca/amg-kart-selo.{svg,png} e src/app/icon.png — mudou aqui, gerar de novo.
  */
 
 const AMARELO = "#ffd400"
@@ -59,7 +60,7 @@ export function SimboloLiga({ className }: { className?: string }) {
 export function LogoLiga({ className = "" }: { className?: string }) {
   return (
     <span className={`inline-flex items-center gap-2.5 ${className}`} aria-label={liga.nome} role="img">
-      <SimboloLiga className="h-full w-auto" />
+      <SeloLiga title={false} className="h-full w-auto" />
       <span className="flex flex-col justify-center font-display font-black uppercase italic leading-[0.82] tracking-tight">
         <span className="text-[1.2em]">AMG</span>
         <span className="text-[0.62em] font-extrabold not-italic tracking-[0.42em] text-muted">Kart</span>

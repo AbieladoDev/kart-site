@@ -9,8 +9,8 @@ export const contentType = "image/png"
 
 /** Imagem que aparece no preview do link (WhatsApp, Instagram etc.): o logo do topo. */
 export default async function Image() {
-  const svg = await readFile(join(process.cwd(), "src/app/icon.svg"), "utf8")
-  const kart = `data:image/svg+xml;base64,${Buffer.from(svg).toString("base64")}`
+  const png = await readFile(join(process.cwd(), "public/marca/amg-kart-selo.png"))
+  const kart = `data:image/png;base64,${png.toString("base64")}`
 
   return new ImageResponse(
     (

@@ -51,7 +51,7 @@ export const equipes: Equipe[] = [
     nome: "Curto-Circuito GP",
     cor1: "#1e2a5a", cor2: "#ef4444", cor3: "#facc15",
     desenho: "chevron", emblema: Zap,
-    pilotos: [{ nome: "Leonardo", numero: 77 }, { nome: "Egor", numero: 60 }],
+    pilotos: [{ nome: "Leonardo", numero: 77, foto: "/pilotos/leonardo.png" }, { nome: "Egor", numero: 60 }],
   },
   {
     nome: "Órbita Racing",

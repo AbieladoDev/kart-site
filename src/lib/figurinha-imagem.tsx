@@ -41,7 +41,7 @@ export async function FigurinhaImagem({ p, u }: { p: PilotoNoGrid; u: number }) 
   const tinta = corTexto(e.cor1)
   const tintaPlaca = corTexto(e.cor2)
   const foto = p.foto ? await dataUri(p.foto, "image/png") : undefined
-  const selo = await dataUri("marca/amg-kart-simbolo.svg", "image/svg+xml")
+  const selo = await dataUri("marca/amg-kart-selo.png", "image/png")
   const largura = 100 * u
   const interna = largura - 7 * u
 
