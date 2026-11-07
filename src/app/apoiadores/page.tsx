@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
 import { liga } from "@/lib/liga"
-import { equipes, pilotos, totalPilotos } from "@/lib/pilotos"
+import { equipes, totalPilotos } from "@/lib/pilotos"
 import { etapas } from "@/lib/campeonato"
-import { FigurinhaFrente } from "@/components/figurinha"
+import { FigurinhaIlustrativa } from "@/components/figurinha"
 import { ListaApoiadores } from "@/components/lista-apoiadores"
 
 export const metadata: Metadata = { title: "Apoie a temporada" }
@@ -35,7 +35,6 @@ const cotas = [
 ]
 
 export default function Apoiadores() {
-  const exemplo = pilotos.find((p) => p.foto) ?? pilotos[0]
   const zap = liga.whatsapp
     ? `https://wa.me/${liga.whatsapp}?text=${encodeURIComponent(`Olá! Quero apoiar a temporada ${liga.temporada} da ${liga.nome}.`)}`
     : undefined
@@ -65,7 +64,7 @@ export default function Apoiadores() {
           )}
         </div>
         <div className="mx-auto w-full max-w-[300px] rotate-3">
-          <FigurinhaFrente p={exemplo} />
+          <FigurinhaIlustrativa e={equipes[0]} />
         </div>
       </section>
 
