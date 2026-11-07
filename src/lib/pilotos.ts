@@ -69,7 +69,7 @@ export const equipes: Equipe[] = [
     nome: "Veneno Verde",
     cor1: "#065f46", cor2: "#a3e635", cor3: "#f0fdf4",
     desenho: "pontas", emblema: Gem,
-    pilotos: [{ nome: "Leandro", numero: 38 }, { nome: "Júnior", numero: 96 }],
+    pilotos: [{ nome: "Leandro", numero: 38, foto: "/pilotos/leandro.png" }, { nome: "Júnior", numero: 96 }],
   },
   {
     nome: "Flamingo Veloz",
