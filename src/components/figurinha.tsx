@@ -1,8 +1,9 @@
 import { UserRound } from "lucide-react"
 import { liga } from "@/lib/liga"
-import { corTexto, pintura, type PilotoNoGrid } from "@/lib/pilotos"
+import { corTexto, pintura, type Equipe, type PilotoNoGrid } from "@/lib/pilotos"
 import { estatisticas, posicaoDe } from "@/lib/campeonato"
 import { SeloLiga } from "./logo"
+import { KartEquipe } from "./kart-equipe"
 
 /*
  * Figurinha de colecionar. Tudo é medido em `cqi` (largura do próprio cartão),
@@ -202,6 +203,55 @@ export function FigurinhaVerso({ p }: { p: PilotoNoGrid }) {
             </div>
           </div>
         </div>
+      </div>
+    </Papel>
+  )
+}
+
+/**
+ * Figurinha ilustrativa (leque da home): pintura da equipe e o kart desenhado nas cores dela,
+ * sem nome nem foto de piloto. Na placa, só o emblema e a marca do grupo.
+ */
+export function FigurinhaIlustrativa({ e }: { e: Equipe }) {
+  const Emblema = e.emblema
+  const tintaPlaca = corTexto(e.cor2)
+  return (
+    <Papel>
+      <div className="relative size-full overflow-hidden rounded-[3.5cqi]" style={{ background: pintura(e) }}>
+        <div className="reticula absolute inset-0 opacity-40" />
+
+        <div className="absolute inset-x-[4.5cqi] top-[4cqi] flex justify-end">
+          <SeloLiga title={false} className="w-[21cqi] -rotate-12 drop-shadow-[0_1cqi_1cqi_rgba(0,0,0,0.5)]" />
+        </div>
+
+        {/* desenho no lugar da foto */}
+        <div className="absolute inset-x-[3cqi] top-[48cqi] flex justify-center drop-shadow-[0_2cqi_2cqi_rgba(0,0,0,0.35)]">
+          <KartEquipe e={e} className="w-full" />
+        </div>
+
+        <div
+          className="absolute inset-x-0 bottom-0 px-[5cqi] pb-[4.5cqi] pt-[8cqi]"
+          style={{ background: e.cor2, color: tintaPlaca, clipPath: "polygon(0 22%, 100% 0, 100% 100%, 0 100%)" }}
+        >
+          <div className="flex items-center gap-[3cqi]">
+            <span
+              className="flex size-[12cqi] shrink-0 items-center justify-center rounded-[2cqi] border-[0.8cqi]"
+              style={{ background: e.cor1, borderColor: e.cor3, color: e.cor3 }}
+            >
+              <Emblema className="size-[7cqi]" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <div className="truncate font-display text-[10cqi] font-black uppercase italic leading-[0.95]">
+                {liga.nome}
+              </div>
+              <div className="mt-[0.6cqi] truncate text-[3.8cqi] font-semibold uppercase tracking-[0.12em] opacity-85">
+                Temporada {liga.temporada}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="holo absolute inset-0" />
       </div>
     </Papel>
   )

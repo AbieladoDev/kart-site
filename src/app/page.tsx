@@ -1,18 +1,16 @@
 import Link from "next/link"
 import { Beef, Beer, Clock, Flag, MapPin, Trophy } from "lucide-react"
 import { liga } from "@/lib/liga"
-import { equipes, pilotos, slugify, totalPilotos } from "@/lib/pilotos"
+import { equipes, slugify, totalPilotos } from "@/lib/pilotos"
 import { classificacao, etapas, proximaEtapa, temResultado } from "@/lib/campeonato"
-import { FigurinhaFrente } from "@/components/figurinha"
+import { FigurinhaIlustrativa } from "@/components/figurinha"
 import { FigurinhaViva } from "@/components/figurinha-viva"
 import { Contagem } from "./contagem"
 import { TracadoPista } from "@/components/tracado-pista"
 import { ListaApoiadores } from "@/components/lista-apoiadores"
 
-// Figurinhas em leque no topo: só as que têm foto (sem foto só entra se faltar para completar 3).
-// Figurinhas em leque no topo: todas as que têm foto (até 5). Sem foto só entra para completar 3.
-const comFoto = pilotos.filter((p) => p.foto)
-const destaque = [...comFoto, ...pilotos.filter((p) => !p.foto)].slice(0, Math.min(5, Math.max(3, comFoto.length)))
+// Leque do topo: figurinhas ILUSTRATIVAS (sem nome nem foto de piloto — pedido), uma por equipe, até 5.
+const destaque = equipes.slice(0, 5)
 
 /** Posição de cada carta no leque: gira e desce conforme se afasta do centro; o centro fica por cima. */
 function noLeque(i: number, total: number): React.CSSProperties {
@@ -89,16 +87,16 @@ export default function Home() {
         </div>
 
         <div className="flex justify-center px-6 pb-6">
-          {destaque.map((p, i) => (
+          {destaque.map((e, i) => (
             <Link
-              key={p.slug}
-              href={`/pilotos/${p.slug}`}
+              key={e.nome}
+              href="/pilotos"
               className="w-[30%] max-w-52 shrink-0"
               style={noLeque(i, destaque.length)}
-              aria-label={`Figurinha de ${p.nome}`}
+              aria-label="Abrir o álbum de figurinhas"
             >
               <FigurinhaViva>
-                <FigurinhaFrente p={p} />
+                <FigurinhaIlustrativa e={e} />
               </FigurinhaViva>
             </Link>
           ))}
