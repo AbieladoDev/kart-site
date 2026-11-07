@@ -1,8 +1,9 @@
 import { readFile } from "node:fs/promises"
 import { join } from "node:path"
 import { ImageResponse } from "next/og"
+import { liga } from "@/lib/liga"
 
-export const alt = "Kart dos amigos — domingo, 08/11, largada 15h20"
+export const alt = `${liga.nome} — Temporada ${liga.temporada}`
 export const size = { width: 1200, height: 630 }
 export const contentType = "image/png"
 
@@ -21,22 +22,21 @@ export default async function Image() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "#07060f",
+          background: "#121216",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 40 }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={kart} width={420} height={210} alt="" />
+          <img src={kart} width={220} height={220} alt="" />
           <div style={{ display: "flex", flexDirection: "column", lineHeight: 1 }}>
-            <div style={{ fontSize: 150, fontWeight: 900, textTransform: "uppercase", color: "#f5f5f5" }}>
-              Kart
+            <div style={{ fontSize: 92, fontWeight: 900, textTransform: "uppercase", color: "#f5f5f5" }}>
+              {liga.nome}
             </div>
-            <div style={{ fontSize: 44, fontWeight: 700, letterSpacing: 14, textTransform: "uppercase", color: "#a3a3a3" }}>
-              dos amigos
+            <div style={{ fontSize: 36, fontWeight: 700, letterSpacing: 8, textTransform: "uppercase", color: "#a3a3a3" }}>
+              {`Temporada ${liga.temporada}`}
             </div>
           </div>
         </div>
-        <div style={{ marginTop: 60, fontSize: 40, color: "#737373" }}>Domingo, 08/11 · largada 15h20</div>
       </div>
     ),
     size,

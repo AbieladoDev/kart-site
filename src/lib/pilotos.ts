@@ -1,10 +1,30 @@
 import {
-  Bird, Crown, Flame, Gem, Mountain, Rocket, Wind, Zap,
+  Bird, CloudLightning, Crown, Flame, Gem, Mountain, Rocket, Wind, Zap,
   type LucideIcon,
 } from "lucide-react"
+import type { Marca } from "./liga"
 
 // Desenho da pintura (livery) aplicada na figurinha.
 export type Desenho = "faixas" | "chevron" | "meio" | "listra" | "pontas"
+
+/** Notas de 0 a 99, estilo game. Sem atributos = aparece "??" na figurinha. */
+export type Atributos = {
+  velocidade: number
+  consistencia: number
+  ultrapassagem: number
+  largada: number
+}
+
+export type Piloto = {
+  nome: string
+  numero: number
+  // foto: caminho em public/, ex. "/pilotos/carlinhos.png" (PNG recortado fica melhor). Sem foto = silhueta.
+  foto?: string
+  apelido?: string
+  cidade?: string
+  frase?: string
+  atributos?: Atributos
+}
 
 export type Equipe = {
   nome: string
@@ -13,11 +33,12 @@ export type Equipe = {
   cor3: string // detalhe
   desenho: Desenho
   emblema: LucideIcon
-  // foto: caminho em public/, ex. "/pilotos/carlinhos.jpg". Sem foto = silhueta.
-  pilotos: { nome: string; numero: number; foto?: string }[]
+  // Patrocinador da equipe: a marca aparece nas figurinhas dela.
+  patrocinador?: Marca
+  pilotos: Piloto[]
 }
 
-// Duplas na ordem da lista do grupo; 17 pilotos → a última equipe é trio (com o Arthur).
+// Duplas na ordem da lista do grupo (18 pilotos, 9 duplas).
 // Números sorteados uma vez e fixados aqui. Nomes de equipe inventados.
 export const equipes: Equipe[] = [
   {
@@ -66,13 +87,51 @@ export const equipes: Equipe[] = [
     nome: "Dinastia Dourada",
     cor1: "#0a0a0a", cor2: "#d4a017", cor3: "#fef3c7",
     desenho: "listra", emblema: Crown,
+    pilotos: [{ nome: "Denis", numero: 92 }, { nome: "Aldo", numero: 63 }],
+  },
+  {
+    nome: "Tempestade Roxa",
+    cor1: "#5b21b6", cor2: "#e879f9", cor3: "#ffffff",
+    desenho: "meio", emblema: CloudLightning,
     pilotos: [
-      { nome: "Denis", numero: 92 },
-      { nome: "Aldo", numero: 63 },
       { nome: "Arthur Biehl", numero: 98, foto: "/pilotos/arthur-biehl.png" },
+      { nome: "Lucimar", numero: 33 },
     ],
   },
 ]
+
+export function slugify(s: string): string {
+  return s
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "")
+}
+
+export type PilotoNoGrid = Piloto & {
+  slug: string
+  equipe: Equipe
+  /** Número da figurinha no álbum (1..total). */
+  figurinha: number
+}
+
+/** Todos os pilotos, na ordem do álbum (equipe por equipe). */
+export const pilotos: PilotoNoGrid[] = equipes
+  .flatMap((equipe) => equipe.pilotos.map((p) => ({ ...p, slug: slugify(p.nome), equipe })))
+  .map((p, i) => ({ ...p, figurinha: i + 1 }))
+
+export const totalPilotos = pilotos.length
+
+export function acharPiloto(slug: string): PilotoNoGrid | undefined {
+  return pilotos.find((p) => p.slug === slug)
+}
+
+/** Média dos atributos (o "overall" da figurinha). */
+export function overall(a?: Atributos): number | undefined {
+  if (!a) return undefined
+  return Math.round((a.velocidade + a.consistencia + a.ultrapassagem + a.largada) / 4)
+}
 
 export function pintura(e: Equipe): string {
   const { cor1, cor2, cor3 } = e
@@ -90,21 +149,9 @@ export function pintura(e: Equipe): string {
   }
 }
 
-/** Texto legível sobre a cor principal (branco ou preto). */
+/** Texto legível sobre a cor (branco ou preto). */
 export function corTexto(hex: string): string {
   const n = parseInt(hex.slice(1), 16)
   const l = 0.299 * (n >> 16) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)
   return l > 160 ? "#0a0a0a" : "#ffffff"
-}
-
-export const totalPilotos = equipes.reduce((s, e) => s + e.pilotos.length, 0)
-
-export const corrida = {
-  local: "Autódromo Fueltech Velopark",
-  data: "08/11",
-  diaSemana: "Domingo",
-  chegada: "14h00",
-  largada: "15h20",
-  // horário de Brasília
-  largadaISO: "2026-11-08T15:20:00-03:00",
 }

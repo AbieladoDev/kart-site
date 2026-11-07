@@ -1,161 +1,195 @@
-import { Ban, Clock, Flag, MapPin, UserRound } from "lucide-react"
-import { corTexto, corrida, equipes, pintura, totalPilotos } from "@/lib/pilotos"
+import Link from "next/link"
+import { Clock, Flag, MapPin } from "lucide-react"
+import { liga } from "@/lib/liga"
+import { acharPiloto, equipes, pilotos, slugify, totalPilotos } from "@/lib/pilotos"
+import { classificacao, etapas, proximaEtapa, temResultado } from "@/lib/campeonato"
+import { FigurinhaFrente } from "@/components/figurinha"
+import { FigurinhaViva } from "@/components/figurinha-viva"
 import { Contagem } from "./contagem"
-import { Campeonato } from "./campeonato"
-import { Logo } from "./logo"
 
-const giro = [-2, 1.5, -1, 2, -1.5, 1]
+// Figurinhas em leque no topo: as que já têm foto primeiro.
+const destaque = [
+  acharPiloto("darby-biehl"),
+  acharPiloto("arthur-biehl"),
+  ...pilotos.filter((p) => !p.foto),
+]
+  .filter((p) => p !== undefined)
+  .slice(0, 3)
+
+const leque = [
+  "-rotate-[9deg] translate-y-6 -mr-[18%]",
+  "z-10 -translate-y-2",
+  "rotate-[9deg] translate-y-6 -ml-[18%]",
+]
 
 export default function Home() {
-  const infos = [
-    { icone: MapPin, titulo: "Local", valor: corrida.local, cor: "#ec4899" },
-    { icone: Clock, titulo: "Chegar até", valor: corrida.chegada, cor: "#3b82f6" },
-    { icone: Flag, titulo: "Largada", valor: corrida.largada, cor: "#22c55e" },
-    { icone: Ban, titulo: "Álcool", valor: "Só depois!", cor: "#f97316" },
-  ]
+  const top = classificacao.slice(0, 5)
 
   return (
-    <main className="fundo min-h-screen">
-      <div className="xadrez h-6" />
-
-      <section className="mx-auto max-w-5xl px-4 pt-10">
-        <Logo />
-        <p className="mt-10 text-center text-xs font-bold uppercase tracking-[0.4em] text-muted sm:text-sm">
-          Falta para a largada
-        </p>
-        <div className="mt-4">
-          <Contagem alvo={corrida.largadaISO} />
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-5xl px-4 pt-14 pb-10">
-        <p className="text-sm font-bold uppercase tracking-[0.3em] text-brand">
-          {corrida.diaSemana}, {corrida.data}
-        </p>
-        <h1 className="mt-2 text-5xl font-black uppercase italic leading-none sm:text-7xl">
-          Kart <span className="titulo-arcoiris pr-2">P1000</span>
-        </h1>
-        <p className="mt-4 max-w-xl text-muted">
-          {totalPilotos} pilotos em {equipes.length} equipes no {corrida.local}. Largada às{" "}
-          {corrida.largada} — estar no local às {corrida.chegada}, sem consumir álcool antes da corrida.
-        </p>
-
-        <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {infos.map(({ icone: Icone, titulo, valor, cor }) => (
-            <div
-              key={titulo}
-              className="vidro rounded-xl border p-4"
-              style={{ borderColor: `${cor}66`, backgroundImage: `linear-gradient(135deg, ${cor}33, transparent 70%)` }}
+    <>
+      {/* Abertura: a temporada + o leque de figurinhas */}
+      <section className="mx-auto grid max-w-6xl items-center gap-12 px-4 pt-12 pb-16 md:grid-cols-[1fr_1.1fr] md:pt-20">
+        <div>
+          <p className="font-display text-lg font-extrabold italic text-brand">
+            Temporada {liga.temporada}
+          </p>
+          <h1 className="mt-2 font-display text-6xl font-black uppercase italic leading-[0.85] tracking-tight sm:text-8xl">
+            {liga.nome}
+          </h1>
+          <p className="mt-6 max-w-md text-lg leading-relaxed text-muted">
+            {totalPilotos} amigos, {equipes.length} equipes e {etapas.length} etapas valendo pontos. Cada piloto tem
+            a sua figurinha — e o álbum vai sendo preenchido corrida a corrida.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link
+              href="/pilotos"
+              className="rounded-full bg-brand px-6 py-3 font-display text-lg font-extrabold uppercase italic text-brand-fg transition hover:brightness-110"
             >
-              <Icone className="size-5" style={{ color: cor }} />
-              <div className="mt-3 text-xs uppercase tracking-widest text-muted">{titulo}</div>
-              <div className="text-xl font-bold leading-tight">{valor}</div>
-            </div>
+              Abrir o álbum
+            </Link>
+            <Link
+              href="/apoiadores"
+              className="rounded-full border border-line px-6 py-3 font-display text-lg font-extrabold uppercase italic text-ink transition hover:border-ink"
+            >
+              Apoiar a temporada
+            </Link>
+          </div>
+        </div>
+
+        <div className="flex justify-center px-6 pb-6">
+          {destaque.map((p, i) => (
+            <Link
+              key={p.slug}
+              href={`/pilotos/${p.slug}`}
+              className={`w-[38%] max-w-56 shrink-0 ${leque[i]}`}
+              aria-label={`Figurinha de ${p.nome}`}
+            >
+              <FigurinhaViva>
+                <FigurinhaFrente p={p} />
+              </FigurinhaViva>
+            </Link>
           ))}
         </div>
       </section>
 
-      <section className="mx-auto max-w-5xl px-4 pb-16">
-        <h2 className="mb-8 text-2xl font-black uppercase italic">Álbum das equipes</h2>
+      {/* Próxima etapa: placa de cronometragem */}
+      {proximaEtapa && (
+        <section className="border-y border-line bg-black/40">
+          <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 lg:grid-cols-[1fr_auto] lg:items-center">
+            <div>
+              <h2 className="font-display text-3xl font-black uppercase italic sm:text-4xl">
+                Etapa {proximaEtapa.numero}
+                {proximaEtapa.data !== "A definir" && <span className="text-brand"> · {proximaEtapa.data}</span>}
+              </h2>
+              <ul className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-muted">
+                <li className="flex items-center gap-2">
+                  <MapPin className="size-4 text-brand" /> {proximaEtapa.local}
+                </li>
+                {proximaEtapa.chegada && (
+                  <li className="flex items-center gap-2">
+                    <Clock className="size-4 text-brand" /> Chegar até {proximaEtapa.chegada}
+                  </li>
+                )}
+                {proximaEtapa.hora && (
+                  <li className="flex items-center gap-2">
+                    <Flag className="size-4 text-brand" /> Largada {proximaEtapa.hora}
+                  </li>
+                )}
+              </ul>
+              <p className="mt-3 text-sm text-muted">Álcool só depois da bandeirada.</p>
+            </div>
+            {proximaEtapa.iso && <Contagem alvo={proximaEtapa.iso} />}
+          </div>
+        </section>
+      )}
 
-        <div className="grid gap-10 md:grid-cols-2">
-          {equipes.map((e, ie) => {
-            const Emblema = e.emblema
-            const tinta = corTexto(e.cor1)
-            return (
-              <article key={e.nome} className={e.pilotos.length > 2 ? "md:col-span-2" : undefined}>
-                <header className="mb-4 flex items-center gap-3">
+      {/* Classificação resumida + equipes */}
+      <section className="mx-auto grid max-w-6xl gap-12 px-4 pt-16 lg:grid-cols-2">
+        <div>
+          <div className="mb-5 flex items-baseline justify-between gap-4">
+            <h2 className="font-display text-3xl font-black uppercase italic">Classificação</h2>
+            <Link href="/classificacao" className="text-sm font-semibold text-muted hover:text-ink">
+              Ver completa
+            </Link>
+          </div>
+          {!temResultado && (
+            <p className="mb-4 text-sm text-muted">Todo mundo zerado — a tabela começa a mexer depois da etapa 1.</p>
+          )}
+          <ol className="overflow-hidden rounded-2xl border border-line bg-surface">
+            {top.map((p) => (
+              <li key={p.slug} className="border-b border-line last:border-b-0">
+                <Link href={`/pilotos/${p.slug}`} className="flex items-center gap-3 px-4 py-3 transition hover:bg-white/5">
+                  <span className="w-6 font-display text-xl font-black italic tabular-nums text-muted">{p.posicao}</span>
                   <span
-                    className="flex size-11 shrink-0 items-center justify-center rounded-lg border-2"
-                    style={{ background: e.cor1, borderColor: e.cor2, color: e.cor2 }}
+                    className="flex h-7 w-10 shrink-0 items-center justify-center rounded font-display font-black italic"
+                    style={{ background: p.equipe.cor1, color: p.equipe.cor2 }}
                   >
-                    <Emblema className="size-6" />
+                    {p.numero}
                   </span>
-                  <div className="min-w-0">
-                    <h3 className="truncate text-xl font-black uppercase italic leading-tight">{e.nome}</h3>
-                    <div className="mt-1 flex h-1.5 w-28 overflow-hidden rounded-full">
-                      <span className="flex-1" style={{ background: e.cor1 }} />
-                      <span className="flex-1" style={{ background: e.cor2 }} />
-                      <span className="flex-1" style={{ background: e.cor3 }} />
-                    </div>
-                  </div>
-                </header>
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate font-semibold">{p.nome}</span>
+                    <span className="block truncate text-xs text-muted">{p.equipe.nome}</span>
+                  </span>
+                  <span className="font-display text-xl font-black tabular-nums">
+                    {p.pontos} <span className="text-xs font-semibold text-muted">pts</span>
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ol>
+        </div>
 
-                <ul className="flex flex-wrap gap-4">
-                  {e.pilotos.map((p, ip) => (
-                    <li
-                      key={p.nome}
-                      className="relative w-[calc(50%-0.5rem)] max-w-40 rounded-xl bg-white p-1.5 shadow-[0_8px_16px_-6px_rgba(0,0,0,0.6)] transition duration-300 hover:z-10 hover:scale-105 hover:rotate-0"
-                      style={{ rotate: `${giro[(ie * 2 + ip) % giro.length]}deg` }}
+        <div>
+          <div className="mb-5 flex items-baseline justify-between gap-4">
+            <h2 className="font-display text-3xl font-black uppercase italic">Equipes</h2>
+            <Link href="/equipes" className="text-sm font-semibold text-muted hover:text-ink">
+              Ver todas
+            </Link>
+          </div>
+          <ul className="grid grid-cols-2 gap-3">
+            {equipes.map((e) => {
+              const Emblema = e.emblema
+              return (
+                <li key={e.nome}>
+                  <Link
+                    href={`/equipes#${slugify(e.nome)}`}
+                    className="flex items-center gap-3 rounded-xl border border-line bg-surface p-3 transition hover:border-muted"
+                  >
+                    <span
+                      className="flex size-9 shrink-0 items-center justify-center rounded-lg border-2"
+                      style={{ background: e.cor1, borderColor: e.cor2, color: e.cor2 }}
                     >
-                      <div
-                        className="relative flex aspect-[3/4] flex-col overflow-hidden rounded-lg"
-                        style={{ background: pintura(e) }}
-                      >
-                        <div className="flex items-center justify-between px-2 pt-1.5">
-                          <span
-                            className="text-2xl font-black italic leading-none"
-                            style={{ color: tinta, textShadow: `2px 2px 0 ${e.cor2}` }}
-                          >
-                            {p.numero}
-                          </span>
-                          <span
-                            className="flex size-6 items-center justify-center rounded"
-                            style={{ background: e.cor2, color: e.cor1 }}
-                          >
-                            <Emblema className="size-4" />
-                          </span>
-                        </div>
-
-                        {/* Foto: public/pilotos/<arquivo>, definida em pilotos.ts */}
-                        <div className="flex flex-1 items-center justify-center px-2 py-1.5">
-                          <div
-                            className="relative aspect-square w-full overflow-hidden rounded-md border-2 bg-black/30"
-                            style={{ borderColor: e.cor3 }}
-                          >
-                            {p.foto ? (
-                              // eslint-disable-next-line @next/next/no-img-element
-                              <img src={p.foto} alt={p.nome} className="size-full object-cover" />
-                            ) : (
-                              <div className="flex size-full flex-col items-center justify-end">
-                                <UserRound
-                                  className="size-4/5 translate-y-[12%]"
-                                  strokeWidth={1.5}
-                                  style={{ color: e.cor3 }}
-                                />
-                              </div>
-                            )}
-                          </div>
-                        </div>
-
-                        <div className="px-1.5 py-1.5 text-center" style={{ background: e.cor2 }}>
-                          <div
-                            className="truncate text-xs font-black uppercase tracking-wide"
-                            style={{ color: corTexto(e.cor2) }}
-                          >
-                            {p.nome}
-                          </div>
-                          <div
-                            className="truncate text-[8px] font-bold uppercase tracking-[0.15em] opacity-80"
-                            style={{ color: corTexto(e.cor2) }}
-                          >
-                            {e.nome}
-                          </div>
-                        </div>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </article>
-            )
-          })}
+                      <Emblema className="size-5" />
+                    </span>
+                    <span className="min-w-0 text-sm font-semibold leading-tight">{e.nome}</span>
+                  </Link>
+                </li>
+              )
+            })}
+          </ul>
         </div>
       </section>
 
-      <div className="zebra h-3" />
-      <Campeonato />
-
-      <div className="xadrez h-6" />
-    </main>
+      {/* Chamada para apoiadores */}
+      <section className="mx-auto max-w-6xl px-4 pt-20">
+        <div className="relative overflow-hidden rounded-3xl bg-brand px-6 py-10 text-brand-fg sm:px-10">
+          <div className="xadrez absolute inset-y-0 right-0 w-16 opacity-90 sm:w-28" />
+          <div className="relative max-w-xl pr-16 sm:pr-0">
+            <h2 className="font-display text-3xl font-black uppercase italic leading-none sm:text-4xl">
+              Sua marca na figurinha de {totalPilotos} pilotos
+            </h2>
+            <p className="mt-4 font-medium">
+              Apoiadores aparecem nas figurinhas, no site e no grid de cada etapa. Veja as cotas.
+            </p>
+            <Link
+              href="/apoiadores"
+              className="mt-6 inline-block rounded-full bg-brand-fg px-6 py-3 font-display text-lg font-extrabold uppercase italic text-brand"
+            >
+              Ver cotas de apoio
+            </Link>
+          </div>
+        </div>
+      </section>
+    </>
   )
 }

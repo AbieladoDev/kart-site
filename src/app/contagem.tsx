@@ -25,11 +25,11 @@ export function Contagem({ alvo }: { alvo: string }) {
     }
   }, [])
 
-  if (agora === null) return <div className="h-28 sm:h-36" />
+  if (agora === null) return <div className="h-20 sm:h-24" />
 
   const falta = new Date(alvo).getTime() - agora
   if (falta <= 0) {
-    return <p className="text-center text-5xl font-black uppercase italic text-brand">Bandeira verde! 🏁</p>
+    return <p className="font-display text-5xl font-black uppercase italic text-brand">Bandeira verde! 🏁</p>
   }
 
   const p = partes(falta)
@@ -45,13 +45,13 @@ export function Contagem({ alvo }: { alvo: string }) {
       {itens.map((i, n) => (
         <div key={i.l} className="flex items-start gap-2 sm:gap-4">
           {n > 0 && (
-            <span className="text-4xl font-black leading-none text-white/30 sm:text-8xl">:</span>
+            <span className="font-display text-4xl font-black leading-none text-white/25 sm:text-7xl">:</span>
           )}
           <div className="text-center">
-            <div className="text-4xl font-black italic leading-none tabular-nums min-[400px]:text-5xl sm:text-8xl">
+            <div className="font-display text-5xl font-black italic leading-none tabular-nums text-brand sm:text-7xl">
               {String(i.v).padStart(2, "0")}
             </div>
-            <div className="mt-2 text-xs font-bold uppercase tracking-[0.3em] text-brand sm:text-sm">{i.l}</div>
+            <div className="mt-2 text-xs font-semibold text-muted sm:text-sm">{i.l}</div>
           </div>
         </div>
       ))}

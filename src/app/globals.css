@@ -1,26 +1,38 @@
 @import "tailwindcss";
 
-/* Cores do site: o ÚNICO lugar. */
+/* Cores e fontes do site: o ÚNICO lugar. */
 @theme {
-  --color-brand: #facc15;
-  --color-brand-fg: #0a0a0a;
-  --color-ink: #f5f5f5;
-  --color-muted: #a3a3a3;
-  --color-surface: #171717;
-  --color-line: #2a2a2a;
-  --color-page: #0a0a0a;
+  --color-brand: #ffd400; /* amarelo de placa de cronometragem */
+  --color-brand-fg: #121216;
+  --color-ink: #ecebe6;
+  --color-muted: #9a9aa6;
+  --color-surface: #1c1c22;
+  --color-line: #2c2c35;
+  --color-page: #121216;
+
+  --font-display: var(--font-saira), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-barlow), ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+  color-scheme: dark;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 3px;
 }
 
 .xadrez {
-  background-image: conic-gradient(#f5f5f5 25%, #0a0a0a 0 50%, #f5f5f5 0 75%, #0a0a0a 0);
-  background-size: 24px 24px;
+  background-image: conic-gradient(#ecebe6 25%, #121216 0 50%, #ecebe6 0 75%, #121216 0);
+  background-size: 16px 16px;
 }
 
-/* Fundo: asfalto — cinza-escuro liso com granulado fino, sem brilho */
+/* Fundo: asfalto — cinza-escuro com granulado fino */
 .fundo {
-  background-color: #141417;
+  background-color: #121216;
   background-image:
-    radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    radial-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
     radial-gradient(rgba(0, 0, 0, 0.35) 1px, transparent 1px);
   background-size: 7px 7px, 11px 11px;
   background-position: 0 0, 3px 5px;
@@ -28,18 +40,74 @@
 
 /* Zebra de pista (vermelho e branco) */
 .zebra {
-  background-image: repeating-linear-gradient(90deg, #dc2626 0 32px, #f5f5f5 32px 64px);
+  background-image: repeating-linear-gradient(90deg, #dc2626 0 32px, #ecebe6 32px 64px);
 }
 
-.titulo-arcoiris {
-  background: linear-gradient(90deg, #facc15, #f97316, #ec4899, #a855f7, #3b82f6, #22c55e);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+/* Retícula de impressão das figurinhas */
+.reticula {
+  background-image: radial-gradient(rgba(0, 0, 0, 0.22) 22%, transparent 24%);
+  background-size: 2.4cqi 2.4cqi;
 }
 
-.vidro {
-  background-color: rgba(23, 23, 23, 0.55);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+/* ---- Figurinha: inclinação + brilho holográfico que segue o ponteiro ---- */
+.figurinha-palco {
+  perspective: 900px;
+}
+
+.figurinha-corpo {
+  --mx: 50%;
+  --my: 50%;
+  --rx: 0deg;
+  --ry: 0deg;
+  --brilho: 0;
+  transform: rotateX(var(--rx)) rotateY(var(--ry));
+  transition: transform 0.35s ease-out;
+  transform-style: preserve-3d;
+}
+
+.figurinha-corpo[data-ativo="true"] {
+  transition: transform 0.06s linear;
+}
+
+.holo {
+  opacity: var(--brilho);
+  transition: opacity 0.3s;
+  mix-blend-mode: color-dodge;
+  background:
+    radial-gradient(circle at var(--mx) var(--my), rgba(255, 255, 255, 0.55), transparent 45%),
+    repeating-linear-gradient(
+      115deg,
+      #ff3d6e 0%,
+      #ffd400 6%,
+      #3dffa8 12%,
+      #3db4ff 18%,
+      #b13dff 24%,
+      #ff3d6e 30%
+    );
+  background-size: 100% 100%, 260% 260%;
+  background-position: center, var(--mx) var(--my);
+  pointer-events: none;
+}
+
+/* Virar a figurinha (frente/verso) */
+.virar {
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.3, 0.7, 0.2, 1);
+}
+.virar[data-verso="true"] {
+  transform: rotateY(180deg);
+}
+.face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.face-verso {
+  transform: rotateY(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .figurinha-corpo,
+  .virar {
+    transition: none;
+  }
 }
