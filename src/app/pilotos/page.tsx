@@ -4,6 +4,7 @@ import { equipes, pilotos, totalPilotos } from "@/lib/pilotos"
 import { liga } from "@/lib/liga"
 import { FigurinhaFrente } from "@/components/figurinha"
 import { FigurinhaViva } from "@/components/figurinha-viva"
+import { CompartilharWhats } from "@/components/compartilhar-whats"
 
 export const metadata: Metadata = { title: "Álbum de figurinhas" }
 
@@ -15,6 +16,11 @@ export default function Album() {
         {totalPilotos} figurinhas da temporada {liga.temporada}, equipe por equipe. Toque numa figurinha para ver o
         verso com atributos e números do campeonato.
       </p>
+      <CompartilharWhats
+        className="mt-6"
+        rotulo="Mandar o álbum no WhatsApp"
+        texto={`Álbum de figurinhas da ${liga.nome} ${liga.temporada}: ${totalPilotos} pilotos, ${equipes.length} equipes 🏁`}
+      />
 
       <div className="mt-12 space-y-16">
         {equipes.map((e) => {

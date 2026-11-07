@@ -45,7 +45,7 @@ export const equipes: Equipe[] = [
     nome: "Inferno Motorsport",
     cor1: "#dc2626", cor2: "#fde047", cor3: "#ffffff",
     desenho: "faixas", emblema: Flame,
-    pilotos: [{ nome: "Carlinhos", numero: 67 }, { nome: "Adrian", numero: 45 }],
+    pilotos: [{ nome: "Carlinhos", numero: 67, foto: "/pilotos/carlinhos.png" }, { nome: "Adrian", numero: 45, foto: "/pilotos/adrian.png" }],
   },
   {
     nome: "Curto-Circuito GP",
@@ -81,7 +81,7 @@ export const equipes: Equipe[] = [
     nome: "Avalanche GP",
     cor1: "#f8fafc", cor2: "#1d4ed8", cor3: "#dc2626",
     desenho: "chevron", emblema: Mountain,
-    pilotos: [{ nome: "Cristian", numero: 11 }, { nome: "Gilson", numero: 27 }],
+    pilotos: [{ nome: "Cristian", numero: 11, foto: "/pilotos/cristian.png" }, { nome: "Gilson", numero: 27 }],
   },
   {
     nome: "Dinastia Dourada",

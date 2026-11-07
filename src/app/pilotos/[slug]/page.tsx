@@ -6,6 +6,9 @@ import { acharPiloto, overall, pilotos, slugify } from "@/lib/pilotos"
 import { estatisticas, posicaoDe } from "@/lib/campeonato"
 import { FigurinhaFrente, FigurinhaVerso } from "@/components/figurinha"
 import { FigurinhaDupla } from "@/components/figurinha-viva"
+import { CompartilharWhats } from "@/components/compartilhar-whats"
+import { CompartilharFigurinha } from "@/components/compartilhar-figurinha"
+import { liga } from "@/lib/liga"
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -49,6 +52,10 @@ export default async function PaginaPiloto({ params }: Props) {
       <div className="mt-6 grid items-start gap-12 md:grid-cols-[minmax(0,380px)_1fr] lg:gap-20">
         <div className="mx-auto w-full max-w-[380px]">
           <FigurinhaDupla nome={p.nome} frente={<FigurinhaFrente p={p} />} verso={<FigurinhaVerso p={p} />} />
+          <div className="mt-3 flex flex-wrap items-start justify-center gap-2">
+            <CompartilharFigurinha slug={p.slug} texto={`Olha a figurinha de ${p.nome} #${p.numero} (${p.equipe.nome}) no álbum da ${liga.nome} ${liga.temporada} 🏁`} />
+            <CompartilharWhats rotulo="Mandar link no WhatsApp" texto={`Olha a figurinha de ${p.nome} #${p.numero} (${p.equipe.nome}) no álbum da ${liga.nome} ${liga.temporada} 🏁`} />
+          </div>
         </div>
 
         <div>
