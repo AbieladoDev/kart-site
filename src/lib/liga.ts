@@ -23,6 +23,14 @@ export type Marca = {
 export const liga = {
   nome: "AMG Kart",
   sigla: "AMG",
+  // Subtítulo embaixo do nome na home.
+  apelido: "Amigos do Kart",
+  // O que significa cada letra da sigla (aparece embaixo do título na home).
+  significado: [
+    { letra: "A", palavra: "Amizade" },
+    { letra: "M", palavra: "Movimento" },
+    { letra: "G", palavra: "Global" },
+  ],
   modalidade: "Kart",
   temporada: 2026,
   // WhatsApp de contato para apoiadores, só dígitos com DDI: "5551999999999". Vazio = esconde o botão.
@@ -43,7 +51,6 @@ export const liga = {
       nome: "BiehlBier",
       cartao: "/apoiadores/biehl-bier.png",
       frase: "Beba melhor",
-      // ⚠️ @ deduzido do carimbo da arte (divulgacao/biehl-bier) — conferir o perfil real.
       instagram: "biehlbier",
     },
     {

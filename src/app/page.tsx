@@ -2,7 +2,7 @@ import Link from "next/link"
 import { Beef, Beer, Clock, Flag, MapPin, Trophy } from "lucide-react"
 import { liga } from "@/lib/liga"
 import { equipes, slugify, totalPilotos } from "@/lib/pilotos"
-import { classificacao, etapas, proximaEtapa, temResultado } from "@/lib/campeonato"
+import { classificacao, proximaEtapa, temResultado } from "@/lib/campeonato"
 import { FigurinhaIlustrativa } from "@/components/figurinha"
 import { FigurinhaViva } from "@/components/figurinha-viva"
 import { Contagem } from "./contagem"
@@ -53,29 +53,62 @@ export default function Home() {
           <p className="font-display text-lg font-extrabold italic text-brand">
             Temporada {liga.temporada}
           </p>
-          <h1 className="mt-2 font-display text-6xl font-black uppercase italic leading-[0.85] tracking-tight sm:text-8xl">
-            {liga.nome}
-          </h1>
-          <p className="mt-7 flex items-end gap-3">
-            <span className="font-display text-7xl font-black italic leading-[0.8] text-brand sm:text-8xl">
-              {totalPilotos}
-            </span>
-            <span className="pb-1 font-display text-2xl font-extrabold uppercase italic leading-[0.95] sm:text-3xl">
-              amigos
-              <br />
-              no grid
-            </span>
-          </p>
+          {/* Título e subtítulo na mesma largura: o subtítulo espalha as letras até a largura do título. */}
+          <div className="mt-2 inline-flex flex-col">
+            <h1 className="font-display text-6xl font-black uppercase italic leading-[0.85] tracking-tight sm:text-8xl">
+              {liga.nome}
+            </h1>
+            <p
+              aria-label={liga.apelido}
+              className="-mt-0.5 flex justify-between pr-[0.15em] font-display text-base font-extrabold uppercase italic leading-none sm:-mt-1.5 sm:text-xl"
+            >
+              {[...liga.apelido].map((c, i) => (
+                <span key={i} aria-hidden>
+                  {c === " " ? " " : c}
+                </span>
+              ))}
+            </p>
+          </div>
+          <dl className="mt-2 flex flex-wrap gap-x-6 gap-y-1 font-display text-xl font-extrabold uppercase italic sm:text-2xl">
+            {liga.significado.map(({ letra, palavra }) => (
+              <div key={letra} className="flex items-baseline gap-1.5">
+                <dt className="text-brand">{letra}</dt>
+                <dd className="text-muted">{palavra}</dd>
+              </div>
+            ))}
+          </dl>
+          <div className="mt-7 flex items-end gap-4 sm:gap-8">
+            <p className="flex shrink-0 items-end gap-2 sm:gap-3">
+              <span className="font-display text-5xl font-black italic leading-[0.8] text-brand min-[400px]:text-6xl sm:text-8xl">
+                {totalPilotos}
+              </span>
+              <span className="pb-1 font-display text-lg font-extrabold uppercase italic leading-[0.95] min-[400px]:text-xl sm:text-3xl">
+                amigos
+                <br />
+                no grid
+              </span>
+            </p>
+            <span aria-hidden className="h-12 w-1 shrink-0 -skew-x-12 self-center rounded-full bg-line sm:h-20" />
+            <p className="flex shrink-0 items-end gap-2 sm:gap-3">
+              <span className="font-display text-5xl font-black italic leading-[0.8] text-brand min-[400px]:text-6xl sm:text-8xl">
+                1
+              </span>
+              <span className="pb-1 font-display text-lg font-extrabold uppercase italic leading-[0.95] min-[400px]:text-xl sm:text-3xl">
+                caneco
+                <br />
+                em jogo
+              </span>
+            </p>
+          </div>
           <p className="mt-5 max-w-md text-lg leading-relaxed text-muted">
-            Na pista ninguém alivia. Depois da bandeirada é resenha, churrasco e a gelada que ficou esperando.{" "}
-            {equipes.length} equipes, {etapas.length} etapas e uma figurinha para cada piloto.
+            Na pista ninguém alivia. Depois da bandeirada é resenha, churrasco e a gelada que ficou esperando.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
               href="/pilotos"
               className="rounded-full bg-brand px-6 py-3 font-display text-lg font-extrabold uppercase italic text-brand-fg transition hover:brightness-110"
             >
-              Abrir o álbum
+              Ver álbum dos AMG
             </Link>
             <Link
               href="/apoiadores"
@@ -249,27 +282,6 @@ export default function Home() {
           </p>
         )}
         <ListaApoiadores />
-      </section>
-
-      {/* Chamada para apoiadores */}
-      <section className="mx-auto max-w-6xl px-4 pt-20">
-        <div className="relative overflow-hidden rounded-3xl bg-brand px-6 py-10 text-brand-fg sm:px-10">
-          <div className="xadrez absolute inset-y-0 right-0 w-16 opacity-90 sm:w-28" />
-          <div className="relative max-w-xl pr-16 sm:pr-0">
-            <h2 className="font-display text-3xl font-black uppercase italic leading-none sm:text-4xl">
-              Sua marca na figurinha de {totalPilotos} pilotos
-            </h2>
-            <p className="mt-4 font-medium">
-              Apoiadores aparecem nas figurinhas, no site e no grid de cada etapa. Veja as cotas.
-            </p>
-            <Link
-              href="/apoiadores"
-              className="mt-6 inline-block rounded-full bg-brand-fg px-6 py-3 font-display text-lg font-extrabold uppercase italic text-brand"
-            >
-              Ver cotas de apoio
-            </Link>
-          </div>
-        </div>
       </section>
     </>
   )
