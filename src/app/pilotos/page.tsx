@@ -50,9 +50,6 @@ export default function Album() {
                 <h2 id={`eq-${doTime[0].slug}`} className="min-w-0 flex-1 truncate font-display text-xl font-black uppercase italic">
                   {e.nome}
                 </h2>
-                <span className="text-sm tabular-nums text-muted">
-                  nº {String(doTime[0].figurinha).padStart(2, "0")}–{String(doTime.at(-1)!.figurinha).padStart(2, "0")}
-                </span>
               </footer>
               <div className="mt-3 flex h-1 overflow-hidden rounded-full">
                 <span className="flex-1" style={{ background: e.cor1 }} />
