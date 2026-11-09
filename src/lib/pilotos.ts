@@ -12,12 +12,10 @@ export type Piloto = {
 }
 
 // Ordem não importa: o grid e o álbum seguem a classificação.
-// ⚠️ Fotos só onde o nome bate sem dúvida com a foto já existente. Esperando confirmação:
-//    leonardo.png (Leo Ramos ou Leonardo Correa?).
 export const cadastro: Piloto[] = [
   { nome: "Egor Ocana" },
   { nome: "Adrian Henry", foto: "/pilotos/adrian.png" },
-  { nome: "Leo Ramos" },
+  { nome: "Leo Ramos", foto: "/pilotos/leonardo.png" }, // confirmado 08/11/2026
   { nome: "Remi Alano" },
   { nome: "Antonio Carlos", foto: "/pilotos/carlinhos.png" }, // o "Carlinhos" (confirmado 08/11/2026)
   { nome: "Leonardo Correa" },

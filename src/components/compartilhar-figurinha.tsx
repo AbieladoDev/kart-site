@@ -1,24 +1,33 @@
 "use client"
 
 import { useState } from "react"
-import { Share2 } from "lucide-react"
+import { Smartphone, Share2 } from "lucide-react"
 
 /**
- * Compartilha a IMAGEM da figurinha (PNG gerado em /pilotos/<slug>/figurinha).
+ * Compartilha uma IMAGEM gerada pelo site:
+ * - tipo "figurinha": a cartinha (PNG em /pilotos/<slug>/figurinha) — é o download;
+ * - tipo "story": a tela cheia 1080×1920 (JPEG em /pilotos/<slug>/story).
  * No celular abre a folha de compartilhar do sistema (WhatsApp, status, Instagram...).
- * Onde o navegador não compartilha arquivo (a maioria dos computadores), baixa o PNG.
+ * Onde o navegador não compartilha arquivo (a maioria dos computadores), baixa a imagem.
  */
-export function CompartilharFigurinha({ slug }: { slug: string }) {
+const tipos = {
+  figurinha: { caminho: "figurinha", ext: "png", mime: "image/png", rotulo: "Compartilhar figurinha", icone: Share2 },
+  story: { caminho: "story", ext: "jpg", mime: "image/jpeg", rotulo: "Compartilhar no story", icone: Smartphone },
+} as const
+
+export function CompartilharFigurinha({ slug, tipo = "figurinha" }: { slug: string; tipo?: keyof typeof tipos }) {
   const [estado, setEstado] = useState<"livre" | "gerando" | "erro">("livre")
+  const t = tipos[tipo]
+  const Icone = t.icone
 
   async function compartilhar() {
     setEstado("gerando")
     try {
-      const resp = await fetch(`/pilotos/${slug}/figurinha`)
+      const resp = await fetch(`/pilotos/${slug}/${t.caminho}`)
       if (!resp.ok) throw new Error(String(resp.status))
       const blob = await resp.blob()
-      const arquivo = new File([blob], `figurinha-${slug}.png`, { type: "image/png" })
-      // Só a imagem: sem texto nem link junto — o compartilhamento mostra só a figurinha.
+      const arquivo = new File([blob], `${t.caminho}-${slug}.${t.ext}`, { type: t.mime })
+      // Só a imagem: sem texto nem link junto — o compartilhamento mostra só a imagem.
       const dados = { files: [arquivo] }
 
       if (navigator.canShare?.(dados)) {
@@ -48,10 +57,12 @@ export function CompartilharFigurinha({ slug }: { slug: string }) {
         type="button"
         onClick={compartilhar}
         disabled={estado === "gerando"}
-        className="flex items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 text-sm font-bold text-brand-fg transition hover:brightness-110 disabled:opacity-60"
+        className={`flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold transition disabled:opacity-60 ${
+          tipo === "story" ? "bg-ink text-page hover:bg-white" : "bg-brand text-brand-fg hover:brightness-110"
+        }`}
       >
-        <Share2 className="size-4" strokeWidth={2.5} />
-        {estado === "gerando" ? "Preparando a figurinha..." : "Compartilhar figurinha"}
+        <Icone className="size-4" strokeWidth={2.5} />
+        {estado === "gerando" ? "Preparando a imagem..." : t.rotulo}
       </button>
       {estado === "erro" && (
         <p role="alert" className="mt-2 text-sm text-muted">

@@ -260,6 +260,7 @@ export default async function PaginaPiloto({ params }: Props) {
           <FigurinhaDupla nome={p.nome} frente={<FigurinhaFrente p={p} />} verso={<FigurinhaVerso p={p} />} />
           <div className="mt-3 flex flex-wrap items-start justify-center gap-2">
             <CompartilharFigurinha slug={p.slug} />
+            <CompartilharFigurinha slug={p.slug} tipo="story" />
             <CompartilharWhats rotulo="Mandar link no WhatsApp" texto={`Olha a figurinha de ${p.nome} no álbum da ${liga.nome} ${liga.temporada} 🏁`} />
           </div>
         </div>

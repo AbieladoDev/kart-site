@@ -6,7 +6,7 @@ import { join } from "node:path"
 import { liga } from "./liga"
 import { voltaCurta, type PilotoNoGrid } from "./campeonato"
 
-async function dataUri(caminhoPublico: string) {
+export async function dataUri(caminhoPublico: string) {
   const buf = await readFile(join(process.cwd(), "public", caminhoPublico))
   const tipo = caminhoPublico.endsWith(".jpg") ? "image/jpeg" : "image/png"
   return `data:${tipo};base64,${buf.toString("base64")}`
