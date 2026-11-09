@@ -1,8 +1,8 @@
 // Identidade do grupo. Trocar o nome aqui troca no site inteiro (selo, figurinhas, título).
 
 // `descricao` = texto do title (passar o mouse).
-// `cartao` = imagem inteira (cartão de visita, logo com fundo) no lugar da logo; a placa mostra
-// embaixo frase, nome e contatos (telefone, e-mail, Instagram), centralizados.
+// `cartao` = imagem inteira (cartão de visita, logo com fundo) no topo do card; embaixo vão
+// nome, ramo e contatos (site, telefone, e-mail, Instagram).
 export type Marca = {
   nome: string
   logo?: string
@@ -12,10 +12,8 @@ export type Marca = {
   /** só dígitos com DDI: "5551996071459" */
   telefone?: string
   email?: string
-  /** frase curta acima do nome (ex.: slogan) */
-  frase?: string
-  /** não mostra a linha do nome embaixo (a marca já está na imagem) */
-  ocultarNome?: boolean
+  /** o que a marca faz, em poucas palavras (linha embaixo do nome) */
+  ramo?: string
   /** @ do(s) Instagram, sem o @ — vários ficam na mesma linha */
   instagram?: string | string[]
 }
@@ -44,23 +42,31 @@ export const liga = {
       descricao: "Projetos, engenharia de segurança do trabalho, engenharia mecânica, perícias trabalhistas e PPCI/SPCI",
       // só as atividades, recortadas do cartão (nome e contatos já vão no texto embaixo)
       cartao: "/apoiadores/antonio-wacht-atividades.png",
+      ramo: "Engenharia e segurança do trabalho",
       telefone: "5551996071459",
       email: "eng.antonio.wachts@gmail.com",
     },
     {
       nome: "BiehlBier",
       cartao: "/apoiadores/biehl-bier.png",
-      frase: "Beba melhor",
+      ramo: "Cerveja artesanal · Beba melhor",
       instagram: "biehlbier",
     },
+    // Darby Biehl e db.app: duas marcas, um card cada (artes geradas de db-admin/public/Logo-DB, no azul da marca)
     {
-      nome: "db",
-      descricao: "db - Consultoria, Gestão em TI, desenvolvemos Aplicações personalizadas",
-      // Darby Biehl (assessoria e consultoria) + db.app (app developer), montado de db-admin/public/Logo-DB
-      cartao: "/apoiadores/db.png",
-      frase: "Consultoria, Gestão em TI\ndesenvolvemos Aplicações personalizadas",
-      ocultarNome: true,
-      instagram: ["db.app_", "darbybiehl"],
+      nome: "Darby Biehl",
+      descricao: "Assessoria e consultoria, gestão em TI",
+      cartao: "/apoiadores/darby-biehl.png",
+      ramo: "Assessoria e consultoria em TI",
+      instagram: "darbybiehl",
+    },
+    {
+      nome: "db.app",
+      descricao: "Desenvolvimento de aplicações personalizadas",
+      cartao: "/apoiadores/db-app-developer.png",
+      ramo: "Sistemas e aplicativos sob medida",
+      link: "https://db.app.br",
+      instagram: "db.app_",
     },
   ] as Marca[],
 }

@@ -118,3 +118,23 @@ html {
     transition: none;
   }
 }
+
+/* Barra de rolagem fina em todo o site (página e áreas que rolam) */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(243 241 234 / 0.22) transparent;
+}
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgb(243 241 234 / 0.22);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(243 241 234 / 0.4);
+}

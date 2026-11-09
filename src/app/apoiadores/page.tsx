@@ -32,7 +32,7 @@ export default function Apoiadores() {
   return (
     <>
       <section className="relative mx-3 mt-4 overflow-hidden rounded-[2rem]">
-        <FotoFundo src="/fotos/kart-11.jpg" veu="bg-gradient-to-r from-page/95 via-page/80 to-page/30" />
+        <FotoFundo src="/fotos/turma.jpg" veu="bg-gradient-to-r from-page/95 via-page/80 to-page/30" />
         <div className="relative mx-auto max-w-6xl px-5 py-16 sm:py-24">
           <p className="text-[0.7rem] font-bold tracking-[0.2em] text-muted uppercase">Temporada {liga.temporada}</p>
           <h1 className="mt-2 text-5xl font-extrabold tracking-tight sm:text-6xl">

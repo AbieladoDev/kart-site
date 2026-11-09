@@ -32,7 +32,7 @@ export function SeletorEtapas({ abas, paineis, inicial = 0 }: { abas: Aba[]; pai
                 role="tab"
                 aria-selected={ativa}
                 onClick={() => setAtual(i)}
-                className={`shrink-0 rounded-full border px-4 py-2 text-left transition ${
+                className={`shrink-0 rounded-lg border px-4 py-2 text-left transition ${
                   ativa
                     ? "border-ink bg-ink text-page"
                     : "vidro border-white/15 text-ink hover:border-white/40"

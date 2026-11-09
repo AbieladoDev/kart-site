@@ -10,6 +10,11 @@ import { TabelaResultado } from "@/components/resultado-etapa"
 import { Avatar, FotoFundo, TituloSecao } from "@/components/visual"
 import { ListaApoiadores } from "@/components/lista-apoiadores"
 import { Contagem } from "./contagem"
+import { UltimasFotos } from "@/components/ultimas-fotos"
+import { ultimasFotos } from "@/lib/fotos"
+
+// A home lê as últimas fotos do álbum: refaz no máximo a cada 1 min (foto nova aparece em até 1 min).
+export const revalidate = 60
 
 const atalhos = [
   { href: "/pilotos", titulo: "Álbum de figurinhas", texto: "Uma figurinha por piloto, com o kart e os números da corrida.", foto: "/fotos/capacete.jpg" },
@@ -24,7 +29,8 @@ const roteiro = [
   { icone: Beer, titulo: "Gelada no fim", texto: "Cerveja só depois de descer do kart. Quem bebe não pilota." },
 ]
 
-export default function Home() {
+export default async function Home() {
+  const fotos = await ultimasFotos(5)
   const etapa = ultimaEtapa
   const d = etapa && destaquesDa(etapa)
 
@@ -157,6 +163,9 @@ export default function Home() {
         </section>
       )}
 
+      {/* Últimas fotos do álbum: uma grande + quatro pequenas */}
+      <UltimasFotos fotos={fotos} />
+
       {/* O grid: cartões pequenos, um por piloto */}
       <section className="mx-auto max-w-6xl px-4 pt-24">
         <div className="flex flex-wrap items-end justify-between gap-4">
@@ -193,21 +202,30 @@ export default function Home() {
 
       {/* O dia de corrida: foto da turma + roteiro */}
       <section className="mx-auto max-w-6xl px-4 pt-24">
-        <div className="grid items-center gap-8 rounded-[2rem] border border-line bg-surface p-3 md:grid-cols-[1fr_1.1fr] md:p-4">
-          <div className="relative aspect-[4/3] overflow-hidden rounded-[1.5rem] md:aspect-auto md:h-full md:min-h-96">
-            <Image src="/fotos/turma.jpg" alt="" fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
+        {/* sem caixa de fundo: a foto se dissolve no fundo da página (gradiente) e o texto vem ao lado; passos separados por linha fina */}
+        <div className="grid items-center gap-6 md:grid-cols-[0.9fr_1.1fr] md:gap-10">
+          <div className="relative aspect-[4/3] md:aspect-[4/5]">
+            <Image
+              src="/fotos/velocidade.jpg"
+              alt=""
+              fill
+              sizes="(min-width: 768px) 45vw, 100vw"
+              className="object-cover object-[62%_50%] [mask-image:linear-gradient(to_bottom,black_55%,transparent)] md:[mask-image:linear-gradient(to_right,black_65%,transparent)]"
+            />
           </div>
-          <div className="px-3 pb-4 md:px-4 md:py-6">
+          <div>
             <TituloSecao rotulo="O roteiro de cada etapa" antes="Corrida boa termina em " destaque="churrasco" />
             <p className="mt-4 max-w-md text-muted">
               O campeonato é desculpa para juntar a turma. Cada etapa segue o mesmo roteiro, nesta ordem.
             </p>
-            <ol className="mt-8 grid gap-3 sm:grid-cols-2">
+            <ol className="mt-10 grid gap-x-10 sm:grid-cols-2">
               {roteiro.map(({ icone: Icone, titulo, texto }) => (
-                <li key={titulo} className="rounded-2xl border border-line bg-page/60 p-4">
-                  <Icone className="size-5 text-hot" strokeWidth={2} />
-                  <h3 className="mt-3 font-bold">{titulo}</h3>
-                  <p className="mt-1 text-sm leading-relaxed text-muted">{texto}</p>
+                <li key={titulo} className="border-t border-line py-5">
+                  <span className="flex items-center gap-2 font-bold">
+                    <Icone className="size-4 text-hot" strokeWidth={2.25} />
+                    {titulo}
+                  </span>
+                  <span className="mt-1 block text-sm leading-relaxed text-muted">{texto}</span>
                 </li>
               ))}
             </ol>

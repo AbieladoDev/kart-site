@@ -12,6 +12,7 @@ const links = [
   { href: "/pilotos", rotulo: "Álbum" },
   { href: "/classificacao", rotulo: "Classificação" },
   { href: "/calendario", rotulo: "Calendário" },
+  { href: "/fotos", rotulo: "Fotos" },
   { href: "/apoiadores", rotulo: "Apoie" },
 ]
 

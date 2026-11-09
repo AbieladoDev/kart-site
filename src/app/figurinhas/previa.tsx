@@ -24,7 +24,7 @@ export function Previa({ pilotos }: { pilotos: Item[] }) {
             type="button"
             onClick={() => setSlug(p.slug)}
             aria-pressed={p.slug === slug}
-            className={`shrink-0 rounded-full border px-4 py-2 text-sm font-bold transition ${
+            className={`shrink-0 rounded-lg border px-4 py-2 text-sm font-bold transition ${
               p.slug === slug ? "border-ink bg-ink text-page" : "border-line text-muted hover:text-ink"
             }`}
           >

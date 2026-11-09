@@ -75,6 +75,8 @@ export const etapasDisputadas = etapas.filter((e) => e.resultado.length > 0)
 export const proximaEtapa = etapas.find((e) => e.resultado.length === 0)
 export const ultimaEtapa = etapasDisputadas.at(-1)
 export const temResultado = etapasDisputadas.length > 0
+/** Etapas com álbum de fotos: as já corridas + a próxima (para mandar foto no dia da corrida). */
+export const etapasDoAlbum = [...etapasDisputadas, ...(proximaEtapa ? [proximaEtapa] : [])]
 
 export function tempoMs(volta: string): number {
   const [min, seg] = volta.includes(":") ? volta.split(":") : ["0", volta]

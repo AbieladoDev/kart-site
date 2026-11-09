@@ -1,12 +1,13 @@
+/* eslint-disable @next/next/no-img-element -- artes dos apoiadores em public/, já no tamanho certo */
 import Link from "next/link"
+import { AtSign, Globe, Mail, Phone, Plus } from "lucide-react"
 import { liga, type Marca } from "@/lib/liga"
 
 /*
- * Apoiadores como placas de beira de pista: placa clara, larga e baixa, logo no centro e
- * zebra vermelha/branca no pé. Sem texto visível — o nome vai no alt/title.
- * Logo precisa funcionar em fundo claro (por isso a db.app usa a versão azul).
+ * Apoiadores em cards: arte da marca em cima (proporção 1067/475, a das artes em public/apoiadores),
+ * nome e ramo embaixo e, separados por linha fina, os contatos com ícone.
+ * Fecha com um card "Sua marca aqui" que leva para /apoiadores.
  */
-const PLACA = "flex h-full flex-col overflow-hidden rounded-lg bg-[#f4f2ea] shadow-[0_10px_20px_-12px_rgba(0,0,0,0.8)]"
 
 /** "5551996071459" → "(51) 99607-1459" */
 function formatarTelefone(t: string) {
@@ -14,102 +15,86 @@ function formatarTelefone(t: string) {
   return d.length === 11 ? `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}` : t
 }
 
-/** Placa com o cartão inteiro e frase, nome e contatos embaixo — mesmo tamanho das outras (4 por linha). */
-function PlacaCartao({ a }: { a: Marca }) {
+const site = (url: string) => url.replace(/^https?:\/\//, "").replace(/\/$/, "")
+
+function Contato({ href, icone: Icone, children }: { href: string; icone: typeof Globe; children: React.ReactNode }) {
+  const externo = href.startsWith("http")
   return (
-    <div title={a.descricao ? `${a.nome} — ${a.descricao}` : a.nome} className={PLACA}>
-      {/* Mesma altura em todos, na proporção da arte da BiehlBier (a mais larga), que aparece
-          inteira. As outras encolhem para caber, sem corte, sobre fundo preto. */}
-      <span className="block aspect-[1067/475] w-full bg-black">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={a.cartao} alt={a.nome} className="size-full object-contain" />
-      </span>
-      <span className="zebra block h-2.5" aria-hidden />
-      <div className="flex flex-1 flex-col items-center px-2 py-2 text-center leading-snug text-[#121216]">
-        {a.frase && <span className="w-full whitespace-pre-line text-xs font-semibold italic text-[#55555f]">{a.frase}</span>}
-        {!a.ocultarNome && (
-          <span className="w-full truncate font-display text-sm font-black uppercase italic leading-tight">{a.nome}</span>
-        )}
-        {a.telefone && (
-          <a href={`https://wa.me/${a.telefone}`} target="_blank" rel="noreferrer" className="text-xs font-semibold hover:underline">
-            {formatarTelefone(a.telefone)}
-          </a>
-        )}
-        {a.email && (
-          <a href={`mailto:${a.email}`} className="w-full truncate text-xs font-semibold hover:underline">
-            {a.email}
-          </a>
-        )}
-        {a.instagram && (
-          <span className="flex flex-wrap justify-center gap-x-2">
-            {[a.instagram].flat().map((ig) => (
-              <a
-                key={ig}
-                href={`https://instagram.com/${ig}`}
-                target="_blank"
-                rel="noreferrer"
-                className="text-xs font-semibold hover:underline"
-              >
-                @{ig}
-              </a>
-            ))}
-          </span>
+    <li>
+      <a
+        href={href}
+        {...(externo ? { target: "_blank", rel: "noreferrer" } : {})}
+        className="flex min-w-0 items-center gap-2 text-xs text-muted transition-colors hover:text-ink"
+      >
+        <Icone className="size-3.5 shrink-0 text-hot" strokeWidth={2.25} />
+        <span className="truncate">{children}</span>
+      </a>
+    </li>
+  )
+}
+
+function CardApoiador({ a }: { a: Marca }) {
+  const contatos = [
+    a.link && <Contato key="site" href={a.link} icone={Globe}>{site(a.link)}</Contato>,
+    a.telefone && (
+      <Contato key="tel" href={`https://wa.me/${a.telefone}`} icone={Phone}>
+        {formatarTelefone(a.telefone)}
+      </Contato>
+    ),
+    a.email && <Contato key="mail" href={`mailto:${a.email}`} icone={Mail}>{a.email}</Contato>,
+    ...[a.instagram ?? []].flat().map((ig) => (
+      <Contato key={ig} href={`https://instagram.com/${ig}`} icone={AtSign}>
+        {ig}
+      </Contato>
+    )),
+  ].filter(Boolean)
+
+  return (
+    <article
+      title={a.descricao ? `${a.nome} — ${a.descricao}` : a.nome}
+      className="flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-surface transition hover:border-white/25"
+    >
+      <div className="aspect-[1067/475] overflow-hidden bg-black">
+        {a.cartao ? (
+          <img src={a.cartao} alt={a.nome} className="size-full object-cover" />
+        ) : a.logo ? (
+          <img src={a.logo} alt={a.nome} className="size-full bg-[#f4f2ea] object-contain p-6" />
+        ) : (
+          <span className="flex size-full items-center justify-center font-display text-xl font-black uppercase italic">{a.nome}</span>
         )}
       </div>
-    </div>
+      <div className="flex flex-1 flex-col p-4">
+        <div className="mb-4">
+          <h3 className="leading-tight font-bold">{a.nome}</h3>
+          {a.ramo && <p className="mt-1 text-xs leading-snug text-muted">{a.ramo}</p>}
+        </div>
+        {/* mt-auto: contatos alinhados no pé, mesmo com nomes de alturas diferentes */}
+        {contatos.length > 0 && <ul className="mt-auto space-y-1.5 border-t border-line pt-3">{contatos}</ul>}
+      </div>
+    </article>
   )
 }
 
-function Placa({ a }: { a: Marca }) {
-  if (a.cartao) return <PlacaCartao a={a} />
-  const titulo = a.descricao ? `${a.nome} — ${a.descricao}` : a.nome
-  const conteudo = (
-    <>
-      <span className="flex h-28 items-center justify-center p-2">
-        {a.logo ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={a.logo} alt={a.nome} className="max-h-full max-w-full object-contain" />
-        ) : (
-          <span className="font-display text-2xl font-black uppercase italic text-[#121216]">{a.nome}</span>
-        )}
-      </span>
-      <span className="zebra mt-auto block h-2.5" aria-hidden />
-    </>
-  )
-
-  return a.link ? (
-    <a href={a.link} target="_blank" rel="noreferrer" title={titulo} className={`${PLACA} transition hover:-translate-y-0.5`}>
-      {conteudo}
-    </a>
-  ) : (
-    <div title={titulo} className={PLACA}>
-      {conteudo}
-    </div>
-  )
-}
-
-/** Placas dos apoiadores; completa com "espaço livre" até fechar a linha de 4. */
+/** Cards dos apoiadores + "Sua marca aqui" no fim. */
 export function ListaApoiadores() {
-  const n = liga.apoiadores.length
-  const livres = n === 0 ? 4 : (4 - (n % 4)) % 4
-
   return (
-    <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
+    // 4 apoiadores + "Sua marca aqui" = uma linha de 5 no desktop; ao entrar apoiador novo, rever as colunas
+    <ul className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-5">
       {liga.apoiadores.map((a) => (
         <li key={a.nome}>
-          <Placa a={a} />
+          <CardApoiador a={a} />
         </li>
       ))}
-      {Array.from({ length: livres }, (_, i) => (
-        <li key={`livre-${i}`}>
-          <Link
-            href="/apoiadores"
-            className="flex h-full min-h-[7.6rem] items-center justify-center rounded-lg border-2 border-dashed border-line px-3 text-center text-sm font-semibold text-muted transition hover:border-brand hover:text-brand"
-          >
-            Sua marca aqui
-          </Link>
-        </li>
-      ))}
+      <li>
+        <Link
+          href="/apoiadores"
+          className="flex h-full min-h-48 flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-line px-4 text-center text-muted transition hover:border-brand hover:text-brand"
+        >
+          <Plus className="size-6" strokeWidth={2} />
+          <span className="text-sm font-bold">Sua marca aqui</span>
+          <span className="text-xs">Apoie a temporada {liga.temporada}</span>
+        </Link>
+      </li>
     </ul>
   )
 }
