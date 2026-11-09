@@ -12,10 +12,14 @@ function partes(ms: number) {
   }
 }
 
-export function Contagem({ alvo }: { alvo: string }) {
+const rotulos = ["Dias", "Horas", "Min", "Seg"]
+
+/** Placas de dígito (um dígito por placa). Sem `alvo` = data a definir, placas com traço. */
+export function Contagem({ alvo }: { alvo?: string }) {
   const [agora, setAgora] = useState<number | null>(null)
 
   useEffect(() => {
+    if (!alvo) return
     const tick = () => setAgora(Date.now())
     const primeiro = setTimeout(tick, 0)
     const id = setInterval(tick, 1000)
@@ -23,35 +27,32 @@ export function Contagem({ alvo }: { alvo: string }) {
       clearTimeout(primeiro)
       clearInterval(id)
     }
-  }, [])
+  }, [alvo])
 
-  if (agora === null) return <div className="h-20 sm:h-24" />
-
-  const falta = new Date(alvo).getTime() - agora
-  if (falta <= 0) {
-    return <p className="font-display text-5xl font-black uppercase italic text-brand">Bandeira verde! 🏁</p>
+  let valores: (string | null)[] = [null, null, null, null]
+  if (alvo && agora !== null) {
+    const falta = new Date(alvo).getTime() - agora
+    if (falta <= 0) {
+      return <p className="text-3xl font-extrabold text-brand">Bandeira verde!</p>
+    }
+    const p = partes(falta)
+    valores = [p.dias, p.horas, p.min, p.seg].map((v) => String(v).padStart(2, "0"))
   }
 
-  const p = partes(falta)
-  const itens = [
-    { v: p.dias, l: "dias" },
-    { v: p.horas, l: "horas" },
-    { v: p.min, l: "min" },
-    { v: p.seg, l: "seg" },
-  ]
-
   return (
-    <div className="flex items-start justify-center gap-2 sm:gap-4">
-      {itens.map((i, n) => (
-        <div key={i.l} className="flex items-start gap-2 sm:gap-4">
-          {n > 0 && (
-            <span className="font-display text-4xl font-black leading-none text-white/25 sm:text-7xl">:</span>
-          )}
-          <div className="text-center">
-            <div className="font-display text-5xl font-black italic leading-none tabular-nums text-brand sm:text-7xl">
-              {String(i.v).padStart(2, "0")}
-            </div>
-            <div className="mt-2 text-xs font-semibold text-muted sm:text-sm">{i.l}</div>
+    <div className="grid grid-cols-4 gap-2 sm:gap-8">
+      {rotulos.map((rotulo, i) => (
+        <div key={rotulo} className="text-center">
+          <div className="mb-2 text-[0.65rem] font-bold tracking-[0.18em] text-ink/80 uppercase">{rotulo}</div>
+          <div className="flex justify-center gap-1">
+            {(valores[i] ?? "--").split("").map((d, n) => (
+              <span
+                key={n}
+                className="flex h-11 w-7 items-center justify-center rounded-md bg-ink font-num text-2xl min-[400px]:h-12 min-[400px]:w-9 min-[400px]:text-3xl sm:rounded-lg font-extrabold text-page tabular-nums shadow-[0_6px_14px_-6px_rgba(0,0,0,0.7)] sm:h-20 sm:w-16 sm:text-5xl"
+              >
+                {d}
+              </span>
+            ))}
           </div>
         </div>
       ))}

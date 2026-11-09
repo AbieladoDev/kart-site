@@ -1,279 +1,226 @@
+import Image from "next/image"
 import Link from "next/link"
-import { Beef, Beer, Clock, Flag, MapPin, Trophy } from "lucide-react"
+import { ArrowRight, ArrowUpRight, Beef, Beer, Clock, Flag, MapPin, Trophy } from "lucide-react"
 import { liga } from "@/lib/liga"
-import { equipes, slugify, totalPilotos } from "@/lib/pilotos"
-import { classificacao, proximaEtapa, temResultado } from "@/lib/campeonato"
-import { FigurinhaIlustrativa } from "@/components/figurinha"
+import { comPiloto, destaquesDa, etapas, grid, kmh, proximaEtapa, totalPilotos, ultimaEtapa, type Etapa } from "@/lib/campeonato"
+import { SeletorEtapas } from "@/components/seletor-etapas"
+import { FigurinhaFrente } from "@/components/figurinha"
 import { FigurinhaViva } from "@/components/figurinha-viva"
-import { Contagem } from "./contagem"
-import { TracadoPista } from "@/components/tracado-pista"
+import { TabelaResultado } from "@/components/resultado-etapa"
+import { Avatar, FotoFundo, TituloSecao } from "@/components/visual"
 import { ListaApoiadores } from "@/components/lista-apoiadores"
+import { Contagem } from "./contagem"
 
-// Leque do topo: figurinhas ILUSTRATIVAS (sem nome nem foto de piloto — pedido), uma por equipe, até 5.
-const destaque = equipes.slice(0, 5)
-
-/** Posição de cada carta no leque: gira e desce conforme se afasta do centro; o centro fica por cima. */
-function noLeque(i: number, total: number): React.CSSProperties {
-  const d = i - (total - 1) / 2
-  return {
-    rotate: `${d * 7}deg`,
-    translate: `0 ${Math.abs(d) * Math.abs(d) * 0.6 + Math.abs(d) * 0.4}rem`,
-    zIndex: 10 - Math.round(Math.abs(d) * 2),
-    marginLeft: i === 0 ? 0 : "-14%",
-  }
-}
+const atalhos = [
+  { href: "/pilotos", titulo: "Álbum de figurinhas", texto: "Uma figurinha por piloto, com o kart e os números da corrida.", foto: "/fotos/capacete.jpg" },
+  { href: "/classificacao", titulo: "Classificação", texto: "Quem lidera a temporada depois de cada etapa.", foto: "/fotos/disputa.jpg" },
+  { href: "/calendario", titulo: "Calendário", texto: "As etapas da temporada e o que já foi disputado.", foto: "/fotos/indoor-pista.jpg" },
+]
 
 const roteiro = [
-  {
-    icone: Flag,
-    titulo: "Acelera",
-    texto: "Capacete, bandeira verde e disputa curva por curva. Na pista, amizade fica no box.",
-  },
-  {
-    icone: Trophy,
-    titulo: "Pódio e resenha",
-    texto: "Quem ganhou comemora, quem rodou explica. Revanche marcada para a próxima etapa.",
-  },
-  {
-    icone: Beef,
-    titulo: "Churrasco e gelada",
-    texto: "Fogo aceso, carne na grelha e cerveja liberada — só agora, com todo mundo fora do kart.",
-    destaque: true,
-  },
+  { icone: Flag, titulo: "Acelera", texto: "Capacete, bandeira verde e disputa curva por curva." },
+  { icone: Trophy, titulo: "Pódio e resenha", texto: "Quem ganhou comemora, quem rodou explica." },
+  { icone: Beef, titulo: "Churrasco", texto: "Fogo aceso e carne na grelha com todo mundo junto." },
+  { icone: Beer, titulo: "Gelada no fim", texto: "Cerveja só depois de descer do kart. Quem bebe não pilota." },
 ]
 
 export default function Home() {
-  const top = classificacao.slice(0, 5)
+  const etapa = ultimaEtapa
+  const d = etapa && destaquesDa(etapa)
+
+  const numeros = d && [
+    { rotulo: "Vencedor", valor: comPiloto(d.vencedor).p.nome, detalhe: `Kart ${d.vencedor.kart} · ${d.vencedor.total}` },
+    { rotulo: "Volta mais rápida", valor: d.voltaRapida.melhorVolta, detalhe: comPiloto(d.voltaRapida).p.nome },
+    { rotulo: "Mais veloz", valor: kmh(d.maisVeloz.velocidade), detalhe: comPiloto(d.maisVeloz).p.nome },
+    { rotulo: "Na pista", valor: `${totalPilotos} pilotos`, detalhe: `${d.voltasLider} voltas do líder` },
+  ]
 
   return (
     <>
-      {/* Abertura: a temporada + o leque de figurinhas */}
-      <section className="mx-auto grid max-w-6xl items-center gap-12 px-4 pt-12 pb-16 md:grid-cols-[1fr_1.1fr] md:pt-20">
-        <div>
-          <p className="font-display text-lg font-extrabold italic text-brand">
-            Temporada {liga.temporada}
-          </p>
-          {/* Título e subtítulo na mesma largura: o subtítulo espalha as letras até a largura do título. */}
-          <div className="mt-2 inline-flex flex-col">
-            <h1 className="font-display text-6xl font-black uppercase italic leading-[0.85] tracking-tight sm:text-8xl">
-              {liga.nome}
-            </h1>
-            <p
-              aria-label={liga.apelido}
-              className="-mt-0.5 flex justify-between pr-[0.15em] font-display text-base font-extrabold uppercase italic leading-none sm:-mt-1.5 sm:text-xl"
-            >
-              {[...liga.apelido].map((c, i) => (
-                <span key={i} aria-hidden>
-                  {c === " " ? " " : c}
-                </span>
-              ))}
-            </p>
-          </div>
-          <dl className="mt-2 flex flex-wrap gap-x-6 gap-y-1 font-display text-xl font-extrabold uppercase italic sm:text-2xl">
-            {liga.significado.map(({ letra, palavra }) => (
-              <div key={letra} className="flex items-baseline gap-1.5">
-                <dt className="text-brand">{letra}</dt>
-                <dd className="text-muted">{palavra}</dd>
-              </div>
-            ))}
-          </dl>
-          <div className="mt-7 flex items-end gap-4 sm:gap-8">
-            <p className="flex shrink-0 items-end gap-2 sm:gap-3">
-              <span className="font-display text-5xl font-black italic leading-[0.8] text-brand min-[400px]:text-6xl sm:text-8xl">
-                {totalPilotos}
-              </span>
-              <span className="pb-1 font-display text-lg font-extrabold uppercase italic leading-[0.95] min-[400px]:text-xl sm:text-3xl">
-                amigos
-                <br />
-                no grid
-              </span>
-            </p>
-            <span aria-hidden className="h-12 w-1 shrink-0 -skew-x-12 self-center rounded-full bg-line sm:h-20" />
-            <p className="flex shrink-0 items-end gap-2 sm:gap-3">
-              <span className="font-display text-5xl font-black italic leading-[0.8] text-brand min-[400px]:text-6xl sm:text-8xl">
-                1
-              </span>
-              <span className="pb-1 font-display text-lg font-extrabold uppercase italic leading-[0.95] min-[400px]:text-xl sm:text-3xl">
-                caneco
-                <br />
-                em jogo
-              </span>
-            </p>
-          </div>
-          <p className="mt-5 max-w-md text-lg leading-relaxed text-muted">
-            Na pista ninguém alivia. Depois da bandeirada é resenha, churrasco e a gelada que ficou esperando.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              href="/pilotos"
-              className="rounded-full bg-brand px-6 py-3 font-display text-lg font-extrabold uppercase italic text-brand-fg transition hover:brightness-110"
-            >
-              Ver álbum dos AMG
-            </Link>
-            <Link
-              href="/apoiadores"
-              className="rounded-full border border-line px-6 py-3 font-display text-lg font-extrabold uppercase italic text-ink transition hover:border-ink"
-            >
-              Apoiar a temporada
-            </Link>
-          </div>
-        </div>
+      {/* Abertura: foto de pista, título central, assinatura em letra cursiva */}
+      <section className="relative -mt-[74px] overflow-hidden md:-mt-[62px]">
+        <FotoFundo src="/fotos/indoor-curva.jpg" prioridade posicao="60% 50%" veu="bg-[linear-gradient(to_bottom,var(--color-page)_0%,rgb(14_15_18/0.55)_18%,rgb(14_15_18/0.35)_45%,rgb(14_15_18/0.8)_78%,var(--color-page)_100%)]" />
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-[22%] text-center text-[34vw] leading-none font-extrabold tracking-tighter text-white/[0.06] select-none sm:text-[22vw]"
+        >
+          {liga.sigla}
+        </span>
 
-        <div className="flex justify-center px-6 pb-6">
-          {destaque.map((e, i) => (
-            <Link
-              key={e.nome}
-              href="/pilotos"
-              className="w-[30%] max-w-52 shrink-0"
-              style={noLeque(i, destaque.length)}
-              aria-label="Abrir o álbum de figurinhas"
-            >
-              <FigurinhaViva>
-                <FigurinhaIlustrativa e={e} />
-              </FigurinhaViva>
-            </Link>
-          ))}
+        <div className="relative mx-auto flex min-h-[92svh] max-w-6xl flex-col px-5 pt-32 pb-8 sm:min-h-[44rem] sm:pt-28">
+          <div className="mx-auto max-w-3xl text-center">
+            <h1 className="text-[2.6rem] leading-[1.02] font-extrabold tracking-tight sm:text-6xl">
+              Na pista ninguém alivia.
+              <br />
+              Depois, é resenha.
+            </h1>
+            <p className="relative z-10 -mt-1 -rotate-3 font-script text-5xl text-brand drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)] sm:-mt-2 sm:text-7xl">
+              {liga.apelido}
+            </p>
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
+              <a
+                href="#resultado"
+                className="rounded-full bg-ink px-6 py-3 text-sm font-bold text-page transition hover:bg-brand"
+              >
+                Ver resultado da corrida
+              </a>
+              <Link
+                href="/pilotos"
+                className="rounded-full border border-white/25 px-6 py-3 text-sm font-bold text-ink backdrop-blur transition hover:border-ink"
+              >
+                Abrir o álbum
+              </Link>
+            </div>
+          </div>
+
+          {etapa && numeros && (
+            <div className="mt-auto pt-16">
+              <p className="text-sm font-bold">
+                Corrida de {etapa.data} <span className="font-medium text-muted">· {etapa.local}</span>
+              </p>
+              <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-5 lg:grid-cols-4">
+                {numeros.map((n) => (
+                  <div key={n.rotulo} className="border-t border-white/15 pt-3">
+                    <dt className="text-[0.65rem] font-bold tracking-[0.16em] text-muted uppercase">{n.rotulo}</dt>
+                    <dd className="mt-1 truncate text-base font-bold sm:text-lg">{n.valor}</dd>
+                    <dd className="truncate text-xs text-muted">{n.detalhe}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          )}
         </div>
       </section>
 
-      {/* Próxima etapa: placa de cronometragem */}
-      {proximaEtapa && (
-        <section className="border-y border-line bg-black/40">
-          <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 lg:grid-cols-[1fr_auto_auto] lg:items-center lg:gap-12">
-            <div>
-              <h2 className="font-display text-3xl font-black uppercase italic sm:text-4xl">
-                Etapa {proximaEtapa.numero}
-                {proximaEtapa.data !== "A definir" && <span className="text-brand"> · {proximaEtapa.data}</span>}
-              </h2>
-              <ul className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-muted">
-                <li className="flex items-center gap-2">
-                  <MapPin className="size-4 text-brand" /> {proximaEtapa.local}
-                </li>
-                {proximaEtapa.chegada && (
-                  <li className="flex items-center gap-2">
-                    <Clock className="size-4 text-brand" /> Chegar até {proximaEtapa.chegada}
-                  </li>
-                )}
-                {proximaEtapa.hora && (
-                  <li className="flex items-center gap-2">
-                    <Flag className="size-4 text-brand" /> Largada {proximaEtapa.hora}
-                  </li>
-                )}
-              </ul>
+      {/* Atalhos em foto (cartões grandes) */}
+      {/* celular: carrossel com encaixe; desktop: 3 colunas */}
+      <section className="mx-auto flex max-w-6xl snap-x snap-mandatory gap-3 overflow-x-auto px-4 pt-3 [scrollbar-width:none] md:grid md:grid-cols-3 md:gap-4 md:overflow-visible md:pt-6">
+        {atalhos.map((a) => (
+          <Link key={a.href} href={a.href} className="group relative flex aspect-[4/5] w-[78%] shrink-0 snap-center overflow-hidden rounded-[1.75rem] md:aspect-[3/4] md:w-auto">
+            <Image src={a.foto} alt="" fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover transition duration-700 group-hover:scale-105" />
+            <div className="absolute inset-0 bg-gradient-to-t from-page via-page/30 to-transparent" />
+            <div className="relative mt-auto p-6">
+              <h2 className="text-3xl leading-none font-extrabold tracking-tight">{a.titulo}</h2>
+              <p className="mt-2 max-w-xs text-sm text-ink/75">{a.texto}</p>
+              <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold tracking-[0.14em] text-brand uppercase">
+                Abrir <ArrowUpRight className="size-4" />
+              </span>
             </div>
-            {proximaEtapa.tracado && (
-              <TracadoPista d={proximaEtapa.tracado} nome={proximaEtapa.local} className="mx-auto w-full max-w-72 lg:w-64" />
-            )}
-            {proximaEtapa.iso && <Contagem alvo={proximaEtapa.iso} />}
+          </Link>
+        ))}
+      </section>
+
+      {/* Etapas: etiquetas no topo escolhem a etapa; disputada mostra pódio + folha, as outras "a definir" */}
+      <SeletorEtapas
+        inicial={Math.max(0, etapas.indexOf(ultimaEtapa ?? etapas[0]))}
+        abas={etapas.map((et) => ({
+          numero: et.numero,
+          rotulo: `Etapa ${et.numero}`,
+          detalhe: et.resultado.length > 0 ? `Corrida de ${et.data}` : et.data === "A definir" ? "Data a definir" : et.data,
+        }))}
+        paineis={etapas.map((et) => (et.resultado.length > 0 ? <PainelEtapa key={et.numero} etapa={et} /> : <EtapaAguardando key={et.numero} etapa={et} />))}
+      />
+
+      {/* Próxima etapa: contagem em placas */}
+      {proximaEtapa && (
+        <section className="relative mx-3 mt-4 overflow-hidden rounded-[2rem]">
+          <FotoFundo src={proximaEtapa.foto} veu="bg-page/70" />
+          <div className="relative mx-auto flex max-w-6xl flex-col items-center px-4 py-20 text-center sm:py-28">
+            <div className="vidro w-full max-w-3xl rounded-3xl border border-white/10 p-6 sm:p-10">
+              <p className="text-sm font-bold">
+                Etapa {proximaEtapa.numero}
+                <span className="text-muted"> · {proximaEtapa.data === "A definir" ? "data a definir" : proximaEtapa.data}</span>
+              </p>
+              <div className="mt-5">
+                <Contagem alvo={proximaEtapa.iso} />
+              </div>
+              {!proximaEtapa.iso && (
+                <p className="mt-5 text-sm text-muted">A contagem começa quando a data for marcada no grupo.</p>
+              )}
+            </div>
+            <ul className="mt-6 flex flex-wrap justify-center gap-2 text-sm">
+              <li className="vidro flex items-center gap-2 rounded-full border border-white/10 px-4 py-2">
+                <MapPin className="size-4 text-hot" /> {proximaEtapa.local}
+              </li>
+              {proximaEtapa.chegada && (
+                <li className="vidro flex items-center gap-2 rounded-full border border-white/10 px-4 py-2">
+                  <Clock className="size-4 text-hot" /> Chegar até {proximaEtapa.chegada}
+                </li>
+              )}
+              <li>
+                <Link href="/calendario" className="flex items-center gap-2 rounded-full bg-hot px-5 py-2 font-bold text-page transition hover:brightness-110">
+                  Ver calendário
+                </Link>
+              </li>
+            </ul>
           </div>
         </section>
       )}
 
-      {/* O dia de corrida: acelera, resenha, churrasco — a ordem importa (álcool só no fim) */}
-      <section className="mx-auto max-w-6xl px-4 pt-20">
-        <h2 className="max-w-2xl font-display text-4xl font-black uppercase italic leading-[0.9] sm:text-5xl">
-          Corrida boa termina em churrasco
-        </h2>
-        <p className="mt-4 max-w-xl text-muted">
-          O campeonato é desculpa para juntar a turma. Cada etapa segue o mesmo roteiro, nesta ordem.
-        </p>
-
-        <ol className="mt-10 grid gap-px overflow-hidden rounded-3xl border border-line bg-line md:grid-cols-3">
-          {roteiro.map(({ icone: Icone, titulo, texto, destaque: forte }, i) => (
-            <li key={titulo} className={`relative p-6 sm:p-8 ${forte ? "bg-brand text-brand-fg" : "bg-surface"}`}>
-              <div className="flex items-center justify-between">
-                <Icone className={`size-8 ${forte ? "" : "text-brand"}`} strokeWidth={1.75} />
-                <span
-                  className={`font-display text-5xl font-black italic leading-none ${forte ? "text-brand-fg/25" : "text-white/10"}`}
-                >
-                  {i + 1}
+      {/* O grid: cartões pequenos, um por piloto */}
+      <section className="mx-auto max-w-6xl px-4 pt-24">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <TituloSecao rotulo="Cada um por si" antes="Quem acelerou na " destaque="temporada" />
+          <Link href="/classificacao" className="inline-flex items-center gap-1 text-sm font-bold text-muted hover:text-ink">
+            Classificação completa <ArrowRight className="size-4" />
+          </Link>
+        </div>
+        <ul className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {grid.map((p) => (
+            <li key={p.slug}>
+              <Link
+                href={`/pilotos/${p.slug}`}
+                className="flex items-center gap-3 rounded-2xl border border-line bg-surface p-3 transition hover:border-white/25"
+              >
+                <Avatar nome={p.nome} foto={p.foto} cor={p.cor} className="size-12" />
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate font-bold">{p.nome}</span>
+                  <span className="block truncate text-xs text-muted">
+                    Kart {p.ultima.kart} · melhor volta {p.melhorVolta}
+                  </span>
                 </span>
-              </div>
-              <h3 className="mt-6 font-display text-2xl font-black uppercase italic leading-none">{titulo}</h3>
-              <p className={`mt-3 leading-relaxed ${forte ? "font-medium" : "text-muted"}`}>{texto}</p>
+                <span className="text-right">
+                  <span className="block font-num text-2xl leading-none font-black tabular-nums" style={{ color: p.cor }}>
+                    {p.posicao}º
+                  </span>
+                  <span className="text-[0.65rem] font-bold text-muted">{p.pontos} pts</span>
+                </span>
+              </Link>
             </li>
           ))}
-        </ol>
-
-        <p className="mt-5 flex items-center gap-2.5 text-sm font-semibold">
-          <Beer className="size-5 text-brand" />
-          Regra do grupo: cerveja só depois de descer do kart. Quem bebe não pilota.
-        </p>
+        </ul>
       </section>
 
-      {/* Classificação resumida + equipes */}
-      <section className="mx-auto grid max-w-6xl gap-12 px-4 pt-16 lg:grid-cols-2">
-        <div>
-          <div className="mb-5 flex items-baseline justify-between gap-4">
-            <h2 className="font-display text-3xl font-black uppercase italic">Classificação</h2>
-            <Link href="/classificacao" className="text-sm font-semibold text-muted hover:text-ink">
-              Ver completa
-            </Link>
+      {/* O dia de corrida: foto da turma + roteiro */}
+      <section className="mx-auto max-w-6xl px-4 pt-24">
+        <div className="grid items-center gap-8 rounded-[2rem] border border-line bg-surface p-3 md:grid-cols-[1fr_1.1fr] md:p-4">
+          <div className="relative aspect-[4/3] overflow-hidden rounded-[1.5rem] md:aspect-auto md:h-full md:min-h-96">
+            <Image src="/fotos/turma.jpg" alt="" fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
           </div>
-          {!temResultado && (
-            <p className="mb-4 text-sm text-muted">Todo mundo zerado — a tabela começa a mexer depois da etapa 1.</p>
-          )}
-          <ol className="overflow-hidden rounded-2xl border border-line bg-surface">
-            {top.map((p) => (
-              <li key={p.slug} className="border-b border-line last:border-b-0">
-                <Link href={`/pilotos/${p.slug}`} className="flex items-center gap-3 px-4 py-3 transition hover:bg-white/5">
-                  <span className="w-6 font-display text-xl font-black italic tabular-nums text-muted">{p.posicao}</span>
-                  <span
-                    className="flex h-7 w-10 shrink-0 items-center justify-center rounded font-display font-black italic"
-                    style={{ background: p.equipe.cor1, color: p.equipe.cor2 }}
-                  >
-                    {p.numero}
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate font-semibold">{p.nome}</span>
-                    <span className="block truncate text-xs text-muted">{p.equipe.nome}</span>
-                  </span>
-                  <span className="font-display text-xl font-black tabular-nums">
-                    {p.pontos} <span className="text-xs font-semibold text-muted">pts</span>
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ol>
-        </div>
-
-        <div>
-          <div className="mb-5 flex items-baseline justify-between gap-4">
-            <h2 className="font-display text-3xl font-black uppercase italic">Equipes</h2>
-            <Link href="/equipes" className="text-sm font-semibold text-muted hover:text-ink">
-              Ver todas
-            </Link>
-          </div>
-          <ul className="grid grid-cols-2 gap-3">
-            {equipes.map((e) => {
-              const Emblema = e.emblema
-              return (
-                <li key={e.nome}>
-                  <Link
-                    href={`/equipes#${slugify(e.nome)}`}
-                    className="flex items-center gap-3 rounded-xl border border-line bg-surface p-3 transition hover:border-muted"
-                  >
-                    <span
-                      className="flex size-9 shrink-0 items-center justify-center rounded-lg border-2"
-                      style={{ background: e.cor1, borderColor: e.cor2, color: e.cor2 }}
-                    >
-                      <Emblema className="size-5" />
-                    </span>
-                    <span className="min-w-0 text-sm font-semibold leading-tight">{e.nome}</span>
-                  </Link>
+          <div className="px-3 pb-4 md:px-4 md:py-6">
+            <TituloSecao rotulo="O roteiro de cada etapa" antes="Corrida boa termina em " destaque="churrasco" />
+            <p className="mt-4 max-w-md text-muted">
+              O campeonato é desculpa para juntar a turma. Cada etapa segue o mesmo roteiro, nesta ordem.
+            </p>
+            <ol className="mt-8 grid gap-3 sm:grid-cols-2">
+              {roteiro.map(({ icone: Icone, titulo, texto }) => (
+                <li key={titulo} className="rounded-2xl border border-line bg-page/60 p-4">
+                  <Icone className="size-5 text-hot" strokeWidth={2} />
+                  <h3 className="mt-3 font-bold">{titulo}</h3>
+                  <p className="mt-1 text-sm leading-relaxed text-muted">{texto}</p>
                 </li>
-              )
-            })}
-          </ul>
+              ))}
+            </ol>
+          </div>
         </div>
       </section>
 
-      {/* Apoiadores: logos de quem já apoia; vazio = espaços livres */}
-      <section className="mx-auto max-w-6xl px-4 pt-20">
-        <div className="mb-5 flex items-baseline justify-between gap-4">
-          <h2 className="font-display text-3xl font-black uppercase italic">Apoiadores</h2>
-          <Link href="/apoiadores" className="text-sm font-semibold text-muted hover:text-ink">
-            Ver cotas
+      {/* Apoiadores */}
+      <section className="mx-auto max-w-6xl px-4 pt-24">
+        <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+          <TituloSecao rotulo="Quem faz acontecer" antes="Nossos " destaque="apoiadores" />
+          <Link href="/apoiadores" className="inline-flex items-center gap-1 text-sm font-bold text-muted hover:text-ink">
+            Quero apoiar <ArrowRight className="size-4" />
           </Link>
         </div>
         {liga.master && (
@@ -284,5 +231,58 @@ export default function Home() {
         <ListaApoiadores />
       </section>
     </>
+  )
+}
+
+/** Painel da etapa disputada: título, pódio em figurinhas e a folha de cronometragem. */
+function PainelEtapa({ etapa }: { etapa: Etapa }) {
+  const podio = [2, 1, 3]
+    .map((n) => etapa.resultado.find((r) => r.posicao === n))
+    .filter((r) => r !== undefined)
+    .map(comPiloto)
+  return (
+    <>
+      <TituloSecao
+        rotulo={`Etapa ${etapa.numero} · ${etapa.local}${etapa.categoria ? ` · ${etapa.categoria}` : ""}`}
+        antes="Corrida de "
+        destaque={etapa.data}
+      />
+
+      <ol className="mx-auto mt-10 grid max-w-3xl grid-cols-3 items-end gap-3 sm:gap-6">
+        {podio.map((r) => {
+          const p = grid.find((x) => x.slug === r.piloto)!
+          return (
+            <li key={r.piloto} className={r.posicao === 1 ? "" : "pt-10"}>
+              <Link href={`/pilotos/${p.slug}`} aria-label={`Figurinha de ${p.nome}`} className="block">
+                <FigurinhaViva>
+                  <FigurinhaFrente p={p} />
+                </FigurinhaViva>
+              </Link>
+              <p className="mt-3 text-center font-num text-3xl font-black text-brand italic">{r.posicao}º</p>
+            </li>
+          )
+        })}
+      </ol>
+
+      <div className="mt-12">
+        <TabelaResultado etapa={etapa} />
+        <p className="mt-3 text-xs text-muted">
+          Pontos provisórios (25-18-15-12-10-8-6-4-2-1). Em destaque: a volta mais rápida e a maior velocidade.
+        </p>
+      </div>
+    </>
+  )
+}
+
+/** Etapa ainda não disputada: só o que se sabe (data/local) e o aviso de que o resultado entra aqui. */
+function EtapaAguardando({ etapa }: { etapa: Etapa }) {
+  return (
+    <div className="py-10 text-center">
+      <TituloSecao rotulo={`Etapa ${etapa.numero}`} antes={etapa.data === "A definir" ? "Data " : "Corrida de "} destaque={etapa.data === "A definir" ? "a definir" : etapa.data} />
+      <p className="mx-auto mt-4 max-w-md text-muted">
+        {etapa.local === "A definir" ? "Local e data são combinados no grupo." : `${etapa.local}.`} O pódio e a folha de
+        cronometragem aparecem aqui depois da corrida.
+      </p>
+    </div>
   )
 }

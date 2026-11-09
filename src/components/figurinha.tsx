@@ -1,257 +1,184 @@
 import { UserRound } from "lucide-react"
 import { liga } from "@/lib/liga"
-import { corTexto, pintura, type Equipe, type PilotoNoGrid } from "@/lib/pilotos"
-import { estatisticas, posicaoDe } from "@/lib/campeonato"
+import { voltaCurta, type PilotoNoGrid } from "@/lib/campeonato"
 import { SeloLiga } from "./logo"
-import { KartEquipe } from "./kart-equipe"
 
 /*
  * Figurinha de colecionar. Tudo é medido em `cqi` (largura do próprio cartão),
  * então a mesma figurinha serve no álbum (pequena) e na página do piloto (grande).
- * Proporção 5:7, papel branco com borda de corte, pintura da equipe por baixo.
+ * Proporção 5:7. Borda no tom pastel do piloto, foto de pista ao fundo, foto do piloto por cima.
+ * O número grande é o KART DA ÚLTIMA CORRIDA — muda a cada sessão.
+ * Versão PNG (compartilhar) em src/lib/figurinha-imagem.tsx — mudou aqui, conferir lá.
  */
 
+export const FUNDO_FIGURINHA = "/fotos/velocidade-card.jpg"
 
-function Papel({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+/** Todas as figurinhas são douradas (igual em src/lib/figurinha-imagem.tsx). */
+export const OURO = "#d9b45a"
+export const OURO_BORDA = "linear-gradient(135deg, #f6e3a1 0%, #c8973a 30%, #f3d98c 55%, #a8772a 80%, #e9c977 100%)"
+
+function Papel({ cor, children }: { cor: string; children: React.ReactNode }) {
   // O container fica num wrapper: `cqi` usado no PRÓPRIO elemento container é medido contra o
-  // container de fora (ou a tela), não contra ele — a moldura virava uma pílula gigante.
+  // container de fora (ou a tela), não contra ele.
   return (
-    <div className={`@container w-full ${className}`}>
-      <div className="relative aspect-[5/7] w-full rounded-[7cqi] bg-[#f4f2ea] p-[3.5cqi] shadow-[0_18px_30px_-14px_rgba(0,0,0,0.85)]">
+    <div className="@container w-full">
+      <div
+        className="relative aspect-[5/7] w-full rounded-[2.4cqi] p-[0.6cqi] shadow-[0_22px_40px_-18px_rgba(0,0,0,0.9)]"
+        style={{ background: cor }}
+      >
         {children}
       </div>
     </div>
   )
 }
 
-function MarcaPatrocinio({ nome, logo }: { nome: string; logo?: string }) {
-  return logo ? (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img src={logo} alt={nome} className="h-[5.5cqi] w-auto max-w-[30cqi] object-contain" />
-  ) : (
-    <span className="text-[3.6cqi] font-bold uppercase tracking-wider">{nome}</span>
-  )
+const nomeEmDuas = (nome: string) => {
+  const [primeiro, ...resto] = nome.split(" ")
+  return { primeiro, resto: resto.join(" ") }
 }
 
-export function FigurinhaFrente({ p }: { p: PilotoNoGrid }) {
-  const e = p.equipe
-  const Emblema = e.emblema
-  const tinta = corTexto(e.cor1)
-  const tintaPlaca = corTexto(e.cor2)
-
+function Numero({
+  rotulo,
+  valor,
+  cor = "#ffffff",
+  tamanho = "text-[11cqi]",
+}: {
+  rotulo: string
+  valor: React.ReactNode
+  cor?: string
+  tamanho?: string
+}) {
   return (
-    <Papel>
-      <div className="relative size-full overflow-hidden rounded-[3.5cqi] shadow-[0_0_0_0.4cqi_rgba(0,0,0,0.14)]" style={{ background: pintura(e) }}>
-        <div className="reticula absolute inset-0 opacity-40" />
-
-        {/* número gigante ao fundo */}
-        <div
-          aria-hidden
-          className="absolute -right-[6cqi] top-[8cqi] font-display text-[78cqi] font-black italic leading-none tracking-tighter"
-          style={{ color: e.cor3, opacity: 0.2 }}
-        >
-          {p.numero}
-        </div>
-
-        {/* foto: ocupa a figurinha inteira, sem moldura, e se funde na pintura em cima e embaixo */}
-        {p.foto ? (
-          <div className="absolute inset-x-0 top-0 bottom-[16cqi]">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={p.foto} alt={p.nome} className="size-full object-cover object-[50%_20%]" />
-            <div
-              className="absolute inset-x-0 top-0 h-[42cqi]"
-              style={{ background: `linear-gradient(to bottom, ${e.cor1}e6, ${e.cor1}80 45%, transparent)` }}
-            />
-            <div
-              className="absolute inset-x-0 bottom-0 h-[24cqi]"
-              style={{ background: `linear-gradient(to top, ${e.cor2}, transparent)` }}
-            />
-          </div>
-        ) : (
-          <div className="absolute inset-x-[6cqi] bottom-[26cqi] top-[20cqi] flex items-end justify-center">
-            <UserRound
-              aria-label={`${p.nome} (sem foto)`}
-              className="h-full w-auto translate-y-[8%]"
-              strokeWidth={1.25}
-              style={{ color: e.cor3, opacity: 0.85 }}
-            />
-          </div>
-        )}
-
-        {/* topo: número à esquerda, selo do grupo à direita */}
-        <div className="absolute inset-x-[4.5cqi] top-[4cqi] flex items-start justify-between">
-          <div>
-            <div
-              className="font-display text-[20cqi] font-black italic leading-[0.8] tracking-tight"
-              style={{ color: tinta, textShadow: `0.8cqi 0.8cqi 0 ${e.cor2}` }}
-            >
-              {p.numero}
-            </div>
-          </div>
-          <SeloLiga title={false} className="w-[21cqi] -rotate-12 drop-shadow-[0_1cqi_1cqi_rgba(0,0,0,0.5)]" />
-        </div>
-
-        {/* patrocinador master, se houver */}
-        {liga.master && (
-          <div className="absolute left-1/2 top-[4.5cqi] -translate-x-1/2 rounded-[1.5cqi] bg-white/90 px-[2cqi] py-[1cqi] text-[#121216]">
-            <MarcaPatrocinio {...liga.master} />
-          </div>
-        )}
-
-        {/* placa do nome */}
-        <div
-          className="absolute inset-x-0 bottom-0 px-[5cqi] pb-[4.5cqi] pt-[8cqi]"
-          style={{ background: e.cor2, color: tintaPlaca, clipPath: "polygon(0 22%, 100% 0, 100% 100%, 0 100%)" }}
-        >
-          <div className="flex items-center gap-[3cqi]">
-            <span
-              className="flex size-[12cqi] shrink-0 items-center justify-center rounded-[2cqi] border-[0.8cqi]"
-              style={{ background: e.cor1, borderColor: e.cor3, color: e.cor3 }}
-            >
-              <Emblema className="size-[7cqi]" />
-            </span>
-            <div className="min-w-0 flex-1">
-              <div className="truncate font-display text-[10cqi] font-black uppercase italic leading-[0.95]">
-                {p.nome}
-              </div>
-              <div className="mt-[0.6cqi] truncate text-[3.8cqi] font-semibold uppercase tracking-[0.12em] opacity-85">
-                {e.nome}
-              </div>
-            </div>
-          </div>
-          {e.patrocinador && (
-            <div className="mt-[1.5cqi] flex items-center gap-[1.5cqi] text-[3.2cqi] opacity-85">
-              patrocínio <MarcaPatrocinio {...e.patrocinador} />
-            </div>
-          )}
-        </div>
-
-        <div className="holo absolute inset-0" />
-      </div>
-    </Papel>
-  )
-}
-
-function Dado({ rotulo, valor, grande = false }: { rotulo: string; valor: React.ReactNode; grande?: boolean }) {
-  return (
-    <div>
-      <div className="text-[3.4cqi] font-semibold uppercase tracking-[0.14em] text-[#9a9aa6]">{rotulo}</div>
-      <div className={`font-display font-black italic leading-none tabular-nums ${grande ? "text-[10cqi]" : "text-[7cqi]"}`}>
+    <div className="leading-none">
+      <div className="text-[2.8cqi] font-bold tracking-[0.16em] text-white/60 uppercase">{rotulo}</div>
+      <div className={`mt-[1cqi] font-num ${tamanho} leading-[0.85] font-black italic tabular-nums`} style={{ color: cor }}>
         {valor}
       </div>
     </div>
   )
 }
 
+export function FigurinhaFrente({ p }: { p: PilotoNoGrid }) {
+  const { primeiro, resto } = nomeEmDuas(p.nome)
+  const u = p.ultima
+
+  return (
+    <Papel cor={OURO_BORDA}>
+      <div className="relative size-full overflow-hidden rounded-[1.8cqi] bg-page">
+        {/* pista ao fundo, tingida com o tom do piloto */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={FUNDO_FIGURINHA} alt="" className="absolute inset-0 size-full object-cover" />
+        <div className="absolute inset-0 mix-blend-color" style={{ background: OURO, opacity: 0.55 }} />
+        <div className="absolute inset-0 bg-gradient-to-b from-page/30 via-page/40 to-page/95" />
+
+        {/* foto do piloto (sangrando) ou ícone */}
+        {p.foto ? (
+          <div className="absolute inset-x-0 top-0 bottom-[22cqi]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={p.foto} alt={p.nome} className="size-full object-cover object-[50%_25%]" />
+            <div className="absolute inset-x-0 top-0 h-[34cqi] bg-gradient-to-b from-page/75 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 h-[40cqi] bg-gradient-to-t from-page to-transparent" />
+          </div>
+        ) : (
+          <div className="absolute inset-x-0 top-[24cqi] flex justify-center">
+            <span
+              className="flex size-[52cqi] items-center justify-center rounded-full border-[1cqi] border-white/25"
+              style={{ background: `${OURO}cc` }}
+            >
+              <UserRound aria-label={`${p.nome} (sem foto)`} className="size-[62%] text-page/60" strokeWidth={1.6} />
+            </span>
+          </div>
+        )}
+
+        {/* topo: kart da sessão + selo */}
+        <div className="absolute inset-x-[5cqi] top-[5cqi] flex items-start justify-between">
+          <div className="leading-none">
+            <div className="text-[3cqi] font-bold tracking-[0.2em] text-white/80 uppercase">Kart</div>
+            <div className="font-num text-[19cqi] leading-[0.85] font-black text-brand italic drop-shadow-[0_0.6cqi_0_rgba(0,0,0,0.5)]">
+              {u.kart}
+            </div>
+            <div className="mt-[1cqi] text-[3cqi] font-semibold text-white/80">Corrida de {u.etapa.data}</div>
+          </div>
+          <SeloLiga title={false} className="w-[19cqi] -rotate-12 drop-shadow-[0_1cqi_1cqi_rgba(0,0,0,0.5)]" />
+        </div>
+
+        {/* nome e resultado */}
+        <div className="absolute inset-x-[5cqi] bottom-[5cqi]">
+          <div className="truncate text-[11cqi] leading-[0.95] font-extrabold tracking-tight text-white">{primeiro}</div>
+          {resto && <div className="truncate text-[5cqi] font-semibold text-white/75">{resto}</div>}
+          {/* números lado a lado, sem fundo, na fonte do kart */}
+          <div className="mt-[4cqi] grid grid-cols-3 items-end border-t border-white/15 pt-[3cqi] text-center">
+            <Numero rotulo={`Etapa ${u.etapa.numero}`} valor={`P${u.posicao}`} cor={OURO} />
+            <Numero rotulo="Pontos" valor={p.pontos} />
+            <Numero rotulo="Melhor volta" valor={voltaCurta(u.melhorVolta)} />
+          </div>
+        </div>
+
+        <div className="holo absolute inset-0" />
+      </div>
+    </Papel>
+  )
+}
+
+/** Verso: mesmo fundo e mesmo estilo de número da frente — sem caixas, só números e linhas finas. */
 export function FigurinhaVerso({ p }: { p: PilotoNoGrid }) {
-  const e = p.equipe
-  const s = estatisticas(p.slug)
-  const pos = posicaoDe(p.slug)
+  const u = p.ultima
   const ficha = [
     { rotulo: "Apelido", valor: p.apelido },
     { rotulo: "Cidade", valor: p.cidade },
   ].filter((f) => f.valor)
 
   return (
-    <Papel>
-      <div className="relative flex size-full flex-col overflow-hidden rounded-[3.5cqi] shadow-[0_0_0_0.4cqi_rgba(0,0,0,0.14)] bg-[#1c1c22] text-[#ecebe6]">
-        <div className="h-[9cqi] shrink-0" style={{ background: pintura(e) }} />
+    <Papel cor={OURO_BORDA}>
+      <div className="relative flex size-full flex-col overflow-hidden rounded-[1.8cqi] bg-page text-ink">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={FUNDO_FIGURINHA} alt="" className="absolute inset-0 size-full scale-x-[-1] object-cover" />
+        <div className="absolute inset-0 mix-blend-color" style={{ background: OURO, opacity: 0.55 }} />
+        <div className="absolute inset-0 bg-page/85" />
 
-        <div className="flex flex-1 flex-col gap-[4.5cqi] px-[5cqi] pt-[4cqi] pb-[4cqi]">
-          <div className="flex items-end justify-between gap-[3cqi] border-b border-white/10 pb-[3cqi]">
+        <div className="relative flex flex-1 flex-col px-[5cqi] pt-[5cqi] pb-[5cqi]">
+          <div className="flex items-start justify-between gap-[3cqi]">
             <div className="min-w-0">
-              <div className="truncate font-display text-[9cqi] font-black uppercase italic leading-none">{p.nome}</div>
-              <div className="mt-[1cqi] truncate text-[3.8cqi] text-[#9a9aa6]">{e.nome}</div>
+              <div className="text-[3cqi] font-bold tracking-[0.18em] uppercase" style={{ color: OURO }}>
+                {p.posicao}º na temporada
+              </div>
+              <div className="mt-[1cqi] truncate text-[9cqi] leading-none font-extrabold tracking-tight">{p.nome.split(" ")[0]}</div>
+              <div className="truncate text-[4.4cqi] font-semibold text-white/70">{p.nome.split(" ").slice(1).join(" ")}</div>
             </div>
-            <div className="font-display text-[12cqi] font-black italic leading-none" style={{ color: e.cor1 === "#0a0a0a" ? e.cor2 : e.cor1 }}>
-              {p.numero}
-            </div>
+            <SeloLiga title={false} className="w-[16cqi] shrink-0 -rotate-12" />
           </div>
 
-          <div className="rounded-[2.5cqi] bg-black/30 p-[3.5cqi]">
-            <div className="mb-[2cqi] text-[3.6cqi] font-semibold text-[#ffd400]">Temporada {liga.temporada}</div>
-            <div className="grid grid-cols-3 gap-y-[3cqi]">
-              <Dado rotulo="Posição" valor={pos ? `${pos}º` : "—"} grande />
-              <Dado rotulo="Pontos" valor={s.pontos} grande />
-              <Dado rotulo="Vitórias" valor={s.vitorias} grande />
-              <Dado rotulo="Pódios" valor={s.podios} />
-              <Dado rotulo="Corridas" valor={s.corridas} />
-              <Dado rotulo="Melhor volta" valor={s.melhorVolta ?? "—"} />
-            </div>
+          <div className="mt-[6cqi] text-center text-[3cqi] font-bold tracking-[0.18em] text-white/60 uppercase">
+            Corrida de {u.etapa.data} · kart <span className="text-brand">{u.kart}</span>
+          </div>
+          <div className="mt-[3cqi] grid grid-cols-2 gap-y-[4cqi] border-y border-white/15 py-[4cqi] text-center">
+            <Numero rotulo="Chegada" valor={`P${u.posicao}`} cor={OURO} tamanho="text-[12cqi]" />
+            <Numero rotulo="Melhor volta" valor={voltaCurta(u.melhorVolta)} tamanho="text-[12cqi]" />
+            <Numero rotulo="Voltas" valor={u.voltas} tamanho="text-[12cqi]" />
+            <Numero rotulo="Vel. máx" valor={Math.round(u.velocidade)} tamanho="text-[12cqi]" />
           </div>
 
-          <div className="min-h-0 flex-1 text-[3.8cqi] leading-snug">
-            {ficha.length > 0 || p.frase ? (
-              <>
-                {ficha.map((f) => (
-                  <div key={f.rotulo}>
-                    <span className="text-[#9a9aa6]">{f.rotulo}: </span>
-                    <span className="font-semibold">{f.valor}</span>
-                  </div>
-                ))}
-                {p.frase && <p className="mt-[1.5cqi] italic text-[#cfcdc6]">“{p.frase}”</p>}
-              </>
-            ) : (
-              <p className="text-[#9a9aa6]">Ficha do piloto ainda não preenchida.</p>
-            )}
+          <div className="mt-[5cqi] text-center text-[3cqi] font-bold tracking-[0.18em] text-white/60 uppercase">
+            Temporada {liga.temporada}
+          </div>
+          <div className="mt-[3cqi] grid grid-cols-3 text-center">
+            <Numero rotulo="Pontos" valor={p.pontos} cor={OURO} />
+            <Numero rotulo="Vitórias" valor={p.vitorias} />
+            <Numero rotulo="Pódios" valor={p.podios} />
           </div>
 
-          <div className="flex items-center justify-between gap-[3cqi]">
-            <SeloLiga title={false} className="w-[13cqi]" />
-            <div className="text-right text-[3.4cqi] text-[#9a9aa6]">
+          <div className="mt-auto text-center text-[3.2cqi] leading-snug text-white/70">
+            {ficha.map((f) => (
+              <div key={f.rotulo}>
+                {f.rotulo}: <span className="font-semibold text-ink">{f.valor}</span>
+              </div>
+            ))}
+            {p.frase && <p className="italic">“{p.frase}”</p>}
+            <div className="mt-[1cqi] text-[2.8cqi] font-bold tracking-[0.18em] text-white/40 uppercase">
               {liga.nome} · {liga.temporada}
             </div>
           </div>
         </div>
-      </div>
-    </Papel>
-  )
-}
-
-/**
- * Figurinha ilustrativa (leque da home): pintura da equipe e o kart desenhado nas cores dela,
- * sem nome nem foto de piloto. Na placa, só o emblema e a marca do grupo.
- */
-export function FigurinhaIlustrativa({ e }: { e: Equipe }) {
-  const Emblema = e.emblema
-  const tintaPlaca = corTexto(e.cor2)
-  return (
-    <Papel>
-      <div className="relative size-full overflow-hidden rounded-[3.5cqi]" style={{ background: pintura(e) }}>
-        <div className="reticula absolute inset-0 opacity-40" />
-
-        <div className="absolute inset-x-[4.5cqi] top-[4cqi] flex justify-end">
-          <SeloLiga title={false} className="w-[21cqi] -rotate-12 drop-shadow-[0_1cqi_1cqi_rgba(0,0,0,0.5)]" />
-        </div>
-
-        {/* desenho no lugar da foto */}
-        <div className="absolute inset-x-[3cqi] top-[48cqi] flex justify-center drop-shadow-[0_2cqi_2cqi_rgba(0,0,0,0.35)]">
-          <KartEquipe e={e} className="w-full" />
-        </div>
-
-        <div
-          className="absolute inset-x-0 bottom-0 px-[5cqi] pb-[4.5cqi] pt-[8cqi]"
-          style={{ background: e.cor2, color: tintaPlaca, clipPath: "polygon(0 22%, 100% 0, 100% 100%, 0 100%)" }}
-        >
-          <div className="flex items-center gap-[3cqi]">
-            <span
-              className="flex size-[12cqi] shrink-0 items-center justify-center rounded-[2cqi] border-[0.8cqi]"
-              style={{ background: e.cor1, borderColor: e.cor3, color: e.cor3 }}
-            >
-              <Emblema className="size-[7cqi]" />
-            </span>
-            <div className="min-w-0 flex-1">
-              <div className="truncate font-display text-[10cqi] font-black uppercase italic leading-[0.95]">
-                {liga.nome}
-              </div>
-              <div className="mt-[0.6cqi] truncate text-[3.8cqi] font-semibold uppercase tracking-[0.12em] opacity-85">
-                Temporada {liga.temporada}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="holo absolute inset-0" />
       </div>
     </Papel>
   )

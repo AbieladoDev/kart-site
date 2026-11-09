@@ -61,7 +61,7 @@ export function LogoLiga({ className = "" }: { className?: string }) {
   return (
     <span className={`inline-flex items-center gap-2.5 ${className}`} aria-label={liga.nome} role="img">
       <SeloLiga title={false} className="h-full w-auto" />
-      <span className="flex flex-col justify-center font-display font-black uppercase italic leading-[0.82] tracking-tight">
+      <span className="flex flex-col justify-center font-num font-black uppercase italic leading-[0.82] tracking-tight">
         <span className="text-[1.2em]">AMG</span>
         <span className="text-[0.62em] font-extrabold not-italic tracking-[0.42em] text-muted">Kart</span>
       </span>
@@ -94,7 +94,7 @@ export function SeloLiga({ className, title = true }: { className?: string; titl
         fontSize="8.4"
         fontWeight="800"
         letterSpacing="1.4"
-        style={{ fontFamily: "var(--font-display)", textTransform: "uppercase" }}
+        style={{ fontFamily: "var(--font-num)", textTransform: "uppercase" }}
       >
         <textPath href={`#${id}-anel`} textLength="232" lengthAdjust="spacing">
           {anel}

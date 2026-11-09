@@ -1,10 +1,16 @@
 import type { Metadata, Viewport } from "next"
-import { Barlow, Saira_Condensed } from "next/font/google"
+import { Plus_Jakarta_Sans, Saira_Condensed, Yellowtail } from "next/font/google"
 import Link from "next/link"
 import { liga } from "@/lib/liga"
 import { Cabecalho } from "@/components/cabecalho"
 import { LogoLiga } from "@/components/logo"
 import "./globals.css"
+
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-jakarta",
+})
 
 const saira = Saira_Condensed({
   subsets: ["latin"],
@@ -12,10 +18,10 @@ const saira = Saira_Condensed({
   variable: "--font-saira",
 })
 
-const barlow = Barlow({
+const yellowtail = Yellowtail({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-barlow",
+  weight: "400",
+  variable: "--font-yellowtail",
 })
 
 export const metadata: Metadata = {
@@ -23,7 +29,7 @@ export const metadata: Metadata = {
     default: `${liga.nome} — Temporada ${liga.temporada}`,
     template: `%s · ${liga.nome}`,
   },
-  description: `Temporada ${liga.temporada} do campeonato de kart da galera: pilotos, equipes, classificação e calendário.`,
+  description: `Temporada ${liga.temporada} do campeonato de kart da galera: resultados, figurinhas, classificação e calendário.`,
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL ||
       (process.env.VERCEL_PROJECT_PRODUCTION_URL
@@ -33,7 +39,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: "#121216",
+  themeColor: "#0e0f12",
 }
 
 export default function RootLayout({
@@ -42,14 +48,12 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="pt-BR" className={`${saira.variable} ${barlow.variable}`}>
-      <body className="fundo min-h-screen font-sans text-ink antialiased">
-        <div className="xadrez h-2" />
+    <html lang="pt-BR" className={`${jakarta.variable} ${saira.variable} ${yellowtail.variable}`}>
+      <body className="min-h-screen bg-page font-sans text-ink antialiased">
         <Cabecalho />
         <main>{children}</main>
-        <footer className="mt-24 border-t border-line">
-          <div className="zebra h-1.5" />
-          <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-10 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
+        <footer className="mt-24 bg-black">
+          <div className="mx-auto flex max-w-6xl flex-col gap-4 px-5 py-10 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
             <LogoLiga className="h-9 text-lg text-ink" />
             <p>
               {liga.nome} — campeonato de {liga.modalidade.toLowerCase()} entre amigos, temporada {liga.temporada}.
@@ -58,9 +62,9 @@ export default function RootLayout({
               Quero apoiar a temporada
             </Link>
           </div>
-          <div className="mx-auto flex max-w-6xl flex-col gap-2 border-t border-line px-4 py-5 text-xs text-muted sm:flex-row sm:justify-between">
+          <div className="mx-auto flex max-w-6xl flex-col gap-2 border-t border-white/10 px-5 py-5 text-xs text-muted sm:flex-row sm:justify-between">
             <p>
-              © {new Date().getFullYear()} {liga.nome}
+              © {new Date().getFullYear()} {liga.nome} · Fotos de pista: Unsplash
             </p>
             <p>
               Desenvolvido por{" "}

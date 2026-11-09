@@ -4,7 +4,7 @@ import { useRef, useState } from "react"
 import { RotateCcw } from "lucide-react"
 
 /** Inclina a figurinha e move o brilho holográfico conforme o ponteiro. */
-export function FigurinhaViva({ children, forca = 10 }: { children: React.ReactNode; forca?: number }) {
+export function FigurinhaViva({ children, forca = 6 }: { children: React.ReactNode; forca?: number }) {
   const ref = useRef<HTMLDivElement>(null)
 
   function mover(ev: React.PointerEvent<HTMLDivElement>) {
@@ -18,7 +18,7 @@ export function FigurinhaViva({ children, forca = 10 }: { children: React.ReactN
     el.style.setProperty("--my", `${y * 100}%`)
     el.style.setProperty("--ry", `${(x - 0.5) * forca}deg`)
     el.style.setProperty("--rx", `${(0.5 - y) * forca}deg`)
-    el.style.setProperty("--brilho", "0.32")
+    el.style.setProperty("--brilho", "0.6")
     el.dataset.ativo = "true"
   }
 
@@ -58,7 +58,7 @@ export function FigurinhaDupla({
           type="button"
           onClick={() => setNoVerso((v) => !v)}
           aria-label={noVerso ? `Ver a frente da figurinha de ${nome}` : `Ver o verso da figurinha de ${nome}`}
-          className="virar grid w-full cursor-pointer rounded-[7%/5%] text-left"
+          className="virar grid w-full cursor-pointer rounded-[2.4%/1.7%] text-left"
           data-verso={noVerso}
         >
           <div className="face [grid-area:1/1]">{frente}</div>

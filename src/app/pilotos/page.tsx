@@ -1,65 +1,48 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { equipes, pilotos, totalPilotos } from "@/lib/pilotos"
+import { grid, totalPilotos, ultimaEtapa } from "@/lib/campeonato"
 import { liga } from "@/lib/liga"
 import { FigurinhaFrente } from "@/components/figurinha"
 import { FigurinhaViva } from "@/components/figurinha-viva"
 import { CompartilharWhats } from "@/components/compartilhar-whats"
+import { FotoFundo } from "@/components/visual"
 
 export const metadata: Metadata = { title: "Álbum de figurinhas" }
 
 export default function Album() {
   return (
-    <div className="mx-auto max-w-6xl px-4 pt-12">
-      <h1 className="font-display text-5xl font-black uppercase italic leading-none sm:text-6xl">Álbum</h1>
-      <p className="mt-3 max-w-xl text-muted">
-        {totalPilotos} figurinhas da temporada {liga.temporada}, equipe por equipe. Toque numa figurinha para ver o
-        verso com atributos e números do campeonato.
-      </p>
-      <CompartilharWhats
-        className="mt-6"
-        rotulo="Mandar o álbum no WhatsApp"
-        texto={`Álbum de figurinhas da ${liga.nome} ${liga.temporada}: ${totalPilotos} pilotos, ${equipes.length} equipes 🏁`}
-      />
+    <>
+      <section className="relative mx-3 mt-4 overflow-hidden rounded-[2rem]">
+        <FotoFundo src="/fotos/capacete.jpg" posicao="50% 30%" veu="bg-gradient-to-r from-page/95 via-page/75 to-page/20" />
+        <div className="relative mx-auto max-w-6xl px-5 py-16 sm:py-24">
+          <p className="text-[0.7rem] font-bold tracking-[0.2em] text-muted uppercase">Temporada {liga.temporada}</p>
+          <h1 className="mt-2 text-5xl font-extrabold tracking-tight sm:text-6xl">
+            Álbum de <span className="text-hot">figurinhas</span>
+          </h1>
+          <p className="mt-4 max-w-md text-ink/75">
+            {totalPilotos} pilotos, na ordem da classificação. O número grande é o kart de cada um
+            {ultimaEtapa ? ` na corrida de ${ultimaEtapa.data}` : ""} — muda a cada sessão. Toque numa figurinha para
+            ver os números e baixar.
+          </p>
+          <CompartilharWhats
+            className="mt-6"
+            rotulo="Mandar o álbum no WhatsApp"
+            texto={`Álbum de figurinhas da ${liga.nome} ${liga.temporada}: ${totalPilotos} pilotos 🏁`}
+          />
+        </div>
+      </section>
 
-      {/* Cada equipe é um bloco: as figurinhas da dupla lado a lado e o nome da equipe embaixo. */}
-      <div className="mt-12 grid gap-x-10 gap-y-14 md:grid-cols-2 lg:grid-cols-3">
-        {equipes.map((e) => {
-          const Emblema = e.emblema
-          const doTime = pilotos.filter((p) => p.equipe === e)
-          return (
-            <section key={e.nome} aria-labelledby={`eq-${doTime[0].slug}`}>
-              <ul className="flex gap-4">
-                {doTime.map((p) => (
-                  <li key={p.slug} className="min-w-0 flex-1">
-                    <Link href={`/pilotos/${p.slug}`} aria-label={`Figurinha de ${p.nome}`} className="block">
-                      <FigurinhaViva>
-                        <FigurinhaFrente p={p} />
-                      </FigurinhaViva>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-              <footer className="mt-5 flex items-center gap-3">
-                <span
-                  className="flex size-9 shrink-0 items-center justify-center rounded-lg border-2"
-                  style={{ background: e.cor1, borderColor: e.cor2, color: e.cor2 }}
-                >
-                  <Emblema className="size-5" />
-                </span>
-                <h2 id={`eq-${doTime[0].slug}`} className="min-w-0 flex-1 truncate font-display text-xl font-black uppercase italic">
-                  {e.nome}
-                </h2>
-              </footer>
-              <div className="mt-3 flex h-1 overflow-hidden rounded-full">
-                <span className="flex-1" style={{ background: e.cor1 }} />
-                <span className="flex-1" style={{ background: e.cor2 }} />
-                <span className="flex-1" style={{ background: e.cor3 }} />
-              </div>
-            </section>
-          )
-        })}
-      </div>
-    </div>
+      <ul className="mx-auto mt-12 grid max-w-6xl grid-cols-2 gap-x-4 gap-y-8 px-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-x-6">
+        {grid.map((p) => (
+          <li key={p.slug}>
+            <Link href={`/pilotos/${p.slug}`} aria-label={`Figurinha de ${p.nome}`} className="block">
+              <FigurinhaViva>
+                <FigurinhaFrente p={p} />
+              </FigurinhaViva>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </>
   )
 }

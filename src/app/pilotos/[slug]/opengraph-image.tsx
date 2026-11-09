@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og"
-import { acharPiloto, pilotos } from "@/lib/pilotos"
+import { acharPiloto, grid as pilotos } from "@/lib/campeonato"
 import { FigurinhaImagem, fontesFigurinha } from "@/lib/figurinha-imagem"
 
 // Preview do link da página do piloto (WhatsApp, Instagram): só a figurinha, sem texto em volta.

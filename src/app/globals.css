@@ -2,20 +2,33 @@
 
 /* Cores e fontes do site: o ÚNICO lugar. */
 @theme {
-  --color-brand: #ffd400; /* amarelo de placa de cronometragem */
+  --color-brand: #ffd23f; /* amarelo de placa de cronometragem */
   --color-brand-fg: #121216;
-  --color-ink: #ecebe6;
-  --color-muted: #9a9aa6;
-  --color-surface: #1c1c22;
-  --color-line: #2c2c35;
-  --color-page: #121216;
+  --color-hot: #ff5a36; /* laranja de zebra — destaque de palavra/selo */
+  --color-ink: #f3f1ea;
+  --color-muted: #9d9ea8;
+  --color-surface: #18191d;
+  --color-line: #2a2b31;
+  --color-page: #0e0f12;
 
-  --font-display: var(--font-saira), ui-sans-serif, system-ui, sans-serif;
-  --font-sans: var(--font-barlow), ui-sans-serif, system-ui, sans-serif;
+  /* pastéis (iguais a `pasteis` em src/lib/pilotos.ts) */
+  --color-areia: #f6d58e;
+  --color-ceu: #a8d8f0;
+  --color-menta: #b9e4c9;
+  --color-pessego: #f4b8a6;
+  --color-lavanda: #cdbdf2;
+  --color-rosa: #f2a7c3;
+
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  /* números de corrida (kart, posição, tempo) */
+  --font-num: var(--font-saira), ui-sans-serif, system-ui, sans-serif;
+  --font-script: var(--font-yellowtail), cursive;
 }
 
 html {
   color-scheme: dark;
+  background: var(--color-page);
 }
 
 :focus-visible {
@@ -23,30 +36,33 @@ html {
   outline-offset: 3px;
 }
 
-.xadrez {
-  background-image: conic-gradient(#ecebe6 25%, #121216 0 50%, #ecebe6 0 75%, #121216 0);
-  background-size: 16px 16px;
+/* Vidro escuro sobre foto (cabeçalho, caixas sobre fundo fotográfico) */
+.vidro {
+  background: rgb(14 15 18 / 0.55);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
 }
 
-/* Fundo: asfalto — cinza-escuro com granulado fino */
-.fundo {
-  background-color: #121216;
-  background-image:
-    radial-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
-    radial-gradient(rgba(0, 0, 0, 0.35) 1px, transparent 1px);
-  background-size: 7px 7px, 11px 11px;
-  background-position: 0 0, 3px 5px;
+/* Vidro transparente, sem borda (barra do cabeçalho). Sobre fundo claro (topo do piloto) usar .vidro-escuro. */
+.vidro-claro {
+  background: rgb(14 15 18 / 0.28);
+  backdrop-filter: blur(16px) saturate(1.3);
+  -webkit-backdrop-filter: blur(16px) saturate(1.3);
+}
+
+.vidro-escuro {
+  background: rgb(14 15 18 / 0.72);
+}
+
+/* Número vazado (kart gigante na página do piloto) */
+.vazado {
+  color: transparent;
+  -webkit-text-stroke: 2px currentColor;
 }
 
 /* Zebra de pista (vermelho e branco) */
 .zebra {
-  background-image: repeating-linear-gradient(90deg, #dc2626 0 32px, #ecebe6 32px 64px);
-}
-
-/* Retícula de impressão das figurinhas */
-.reticula {
-  background-image: radial-gradient(rgba(0, 0, 0, 0.22) 22%, transparent 24%);
-  background-size: 2.4cqi 2.4cqi;
+  background-image: repeating-linear-gradient(90deg, #e5352b 0 32px, #f3f1ea 32px 64px);
 }
 
 /* ---- Figurinha: inclinação + brilho holográfico que segue o ponteiro ---- */
@@ -69,23 +85,14 @@ html {
   transition: transform 0.06s linear;
 }
 
+/* Brilho discreto: luz branca suave que segue o ponteiro, sem arco-íris */
 .holo {
   opacity: var(--brilho);
   transition: opacity 0.3s;
-  mix-blend-mode: color-dodge;
+  mix-blend-mode: soft-light;
   background:
-    radial-gradient(circle at var(--mx) var(--my), rgba(255, 255, 255, 0.55), transparent 45%),
-    repeating-linear-gradient(
-      115deg,
-      #ff3d6e 0%,
-      #ffd400 6%,
-      #3dffa8 12%,
-      #3db4ff 18%,
-      #b13dff 24%,
-      #ff3d6e 30%
-    );
-  background-size: 100% 100%, 260% 260%;
-  background-position: center, var(--mx) var(--my);
+    radial-gradient(circle at var(--mx) var(--my), rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.12) 35%, transparent 60%),
+    linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.18) 48%, transparent 66%);
   pointer-events: none;
 }
 
