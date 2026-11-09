@@ -23,7 +23,7 @@ export const cadastro: Piloto[] = [
   { nome: "Nicolas Rodrigues" },
   { nome: "Leandro Mendes", foto: "/pilotos/leandro.png" },
   { nome: "Arthur Veronez", foto: "/pilotos/arthur-biehl.png" }, // mesma pessoa que "Arthur Biehl" (confirmado 08/11/2026)
-  { nome: "Bianca Lencini" },
+  { nome: "Bianca Lencini", foto: "/pilotos/bianca.png" },
   { nome: "Darby Biehl", foto: "/pilotos/darby-biehl.png" },
   { nome: "Aldrovandro Fontes" },
   { nome: "Gilson Carvalho", foto: "/pilotos/gilson.png" },
