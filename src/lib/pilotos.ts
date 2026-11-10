@@ -27,7 +27,7 @@ export const cadastro: Piloto[] = [
   { nome: "Darby Biehl", foto: "/pilotos/darby-biehl.png" },
   { nome: "Aldrovandro Fontes" },
   { nome: "Gilson Carvalho", foto: "/pilotos/gilson.png" },
-  { nome: "Lucimar Silveira" },
+  { nome: "Lucimar Silveira", foto: "/pilotos/lucimar.png" },
 ]
 
 /** Tons pastel: cada piloto ganha um, fixo pela ordem do cadastro. */
